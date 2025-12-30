@@ -5,4 +5,5 @@ namespace App {
     void input(int key, int action);
     void update();
     void render();
+    void close();
 }

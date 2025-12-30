@@ -32,7 +32,7 @@ int main() {
 
         glfwSwapBuffers(window);
     }
-
+    App::close();
     glfwTerminate();
     return 0;
 }

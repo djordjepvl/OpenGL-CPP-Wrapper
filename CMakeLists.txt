@@ -31,6 +31,10 @@ target_link_directories(LearningOpenGL PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-vc2022
 )
 
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/assets")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" 
+     DESTINATION "${CMAKE_BINARY_DIR}/assets")
+
 target_link_libraries(LearningOpenGL PRIVATE 
     glfw3
     OpenGL::GL
