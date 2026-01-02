@@ -23,10 +23,17 @@ int main() {
     glfwSetCursorPosCallback(window, Input::mouse_callback);
     glfwSetMouseButtonCallback(window, Input::mouse_button_callback);
 
+    float deltaTime = 0.0f;
+    float prevTime = 0.0f;
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
+
+        float currentTime = static_cast<float>(glfwGetTime());
+        deltaTime = currentTime - prevTime;
+        prevTime = currentTime;
         
-        App::update();
+        App::update(deltaTime, currentTime);
         App::render();
 
         glfwSwapBuffers(window);

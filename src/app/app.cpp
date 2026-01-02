@@ -48,10 +48,10 @@ void App::init() {
     ebo->Unbind();
 }
 
-void App::update() {
-    if (Input::isKeyDown(GLFW_KEY_SPACE)) std::cout << "SPACE!!!" << std::endl;
-
-    offsetX = sin(glfwGetTime()) * 0.5f;
+void App::update(float deltaTime, float currentTime) {
+    if (Input::isKeyDown(GLFW_KEY_RIGHT)) offsetX += deltaTime;
+    if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime;
+    offsetX = sin(currentTime) * 0.5f;
 }
 
 void App::render() {

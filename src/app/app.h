@@ -4,7 +4,7 @@
 extern float offsetX;
 namespace App {
     void init();
-    void update();
+    void update(float deltaTime, float currentTime);
     void render();
     void close();
 }
