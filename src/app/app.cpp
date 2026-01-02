@@ -51,7 +51,6 @@ void App::init() {
 void App::update(float deltaTime, float currentTime) {
     if (Input::isKeyDown(GLFW_KEY_RIGHT)) offsetX += deltaTime;
     if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime;
-    offsetX = sin(currentTime) * 0.5f;
 }
 
 void App::render() {
