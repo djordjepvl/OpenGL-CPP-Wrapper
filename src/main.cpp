@@ -1,5 +1,6 @@
-#include <config.h>
 #include <app.h>
+
+#include <input.h>
 
 int main() {
     if (!glfwInit()) return -1;
@@ -18,11 +19,9 @@ int main() {
 
     App::init();
 
-    glfwSetKeyCallback(window, [](GLFWwindow* w, int key, int scancode, int action, int mods) {
-        if (action == GLFW_PRESS || action == GLFW_RELEASE) {
-            App::input(key, action); 
-        }
-    });
+    glfwSetKeyCallback(window, Input::key_callback);
+    glfwSetCursorPosCallback(window, Input::mouse_callback);
+    glfwSetMouseButtonCallback(window, Input::mouse_button_callback);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();

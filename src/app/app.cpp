@@ -1,10 +1,12 @@
 #include <app.h>
 
+#include <input.h>
+
 #include <shader.h>
 #include <VBO.h>
 #include <VAO.h>
 #include <EBO.h>
-
+float offsetX = 0.0f;
 // Vertices coordinates
 GLfloat vertices[] =
 {
@@ -46,17 +48,19 @@ void App::init() {
     ebo->Unbind();
 }
 
-void App::input(int key, int action) {
-    
-}
-
 void App::update() {
-    
+    if (Input::isKeyDown(GLFW_KEY_SPACE)) std::cout << "SPACE!!!" << std::endl;
+
+    offsetX = sin(glfwGetTime()) * 0.5f;
 }
 
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT);
     shader->Use();
+    
+    GLint uniLoc = glGetUniformLocation(shader->id, "offset");
+    glUniform3f(uniLoc, offsetX, 0.0f, 0.0f);
+
     vao->Bind();
     glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 }

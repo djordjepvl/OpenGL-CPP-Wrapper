@@ -1,6 +1,6 @@
 #include <shader.h>
 
-#include <io.h>
+#include <fileIO.h>
 
 Shader::Shader(const std::string &vertexFile, const std::string &fragmentFile) {
     std::string vertexCodeStr = fileToString(vertexFile);

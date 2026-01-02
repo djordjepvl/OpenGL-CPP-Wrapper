@@ -11,6 +11,9 @@ add_executable(LearningOpenGL
     src/glad.c
     src/config.h
     src/main.cpp
+    src/fileIO.h
+    src/input.h
+    src/input.cpp
 
     src/app/app.h
     src/app/app.cpp
