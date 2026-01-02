@@ -1,7 +1,7 @@
 #include <app.h>
 
 #include <shader.h>
-
+#include <VBO.h>
 
 // Vertices coordinates
 GLfloat vertices[] =
@@ -23,21 +23,19 @@ GLuint indices[] =
 };
 
 Shader *shader;
-GLuint EBO, VAO, VBO;
+VBO *vbo;
+GLuint EBO, VAO;
 
 void App::init() {
     
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
+    vbo = new VBO(vertices, sizeof(vertices));
 
     glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
-
+    vbo->Bind();
     glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -45,7 +43,7 @@ void App::init() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    vbo->Unbind();
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); 
 
@@ -68,6 +66,6 @@ void App::render() {
 
 void App::close() {
     glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    vbo->Unbind();
     glDeleteBuffers(1, &EBO);
 }
