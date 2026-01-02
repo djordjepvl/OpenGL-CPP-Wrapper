@@ -28,10 +28,10 @@ Shader::Shader(const std::string &vertexFile, const std::string &fragmentFile) {
     glDeleteShader(fragmentShader);
 }
 
-void Shader::Use() {
-    glUseProgram(id);
+Shader::~Shader() {
+    glDeleteProgram(id);
 }
 
-void Shader::Delete() {
-    glDeleteProgram(id);
+void Shader::Use() {
+    glUseProgram(id);
 }

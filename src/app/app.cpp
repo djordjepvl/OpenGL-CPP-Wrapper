@@ -39,7 +39,7 @@ void App::init() {
     vbo = new VBO(vertices, sizeof(vertices));
     ebo = new EBO(indices, sizeof(indices));
     
-    vao->LinkVBO(*vbo, 0);
+    vao->LinkVBO(vbo, 0);
     vao->Unbind();
 
     vbo->Unbind();
@@ -62,7 +62,9 @@ void App::render() {
 }
 
 void App::close() {
-    vao->Delete();
-    vbo->Delete();
-    ebo->Delete();
+    delete shader;
+
+    delete vao;
+    delete vbo;
+    delete ebo;
 }
