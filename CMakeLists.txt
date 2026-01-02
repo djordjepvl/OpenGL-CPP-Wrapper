@@ -18,6 +18,10 @@ add_executable(LearningOpenGL
     src/app/shader.cpp
     src/app/VBO.h
     src/app/VBO.cpp
+    src/app/VAO.h
+    src/app/VAO.cpp
+    src/app/EBO.h
+    src/app/EBO.cpp
 )
 
 set(DEPENDENCIES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)

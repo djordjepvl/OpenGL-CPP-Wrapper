@@ -2,6 +2,8 @@
 
 #include <shader.h>
 #include <VBO.h>
+#include <VAO.h>
+#include <EBO.h>
 
 // Vertices coordinates
 GLfloat vertices[] =
@@ -24,29 +26,24 @@ GLuint indices[] =
 
 Shader *shader;
 VBO *vbo;
-GLuint EBO, VAO;
+VAO *vao;
+EBO *ebo;
 
 void App::init() {
-    
+
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
+
+    vao = new VAO();
+    vao->Bind();
+
     vbo = new VBO(vertices, sizeof(vertices));
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-
-    vbo->Bind();
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    ebo = new EBO(indices, sizeof(indices));
+    
+    vao->LinkVBO(*vbo, 0);
+    vao->Unbind();
 
     vbo->Unbind();
-    glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); 
-
+    ebo->Unbind();
 }
 
 void App::input(int key, int action) {
@@ -60,12 +57,12 @@ void App::update() {
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT);
     shader->Use();
-    glBindVertexArray(VAO);
+    vao->Bind();
     glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 }
 
 void App::close() {
-    glDeleteVertexArrays(1, &VAO);
-    vbo->Unbind();
-    glDeleteBuffers(1, &EBO);
+    vao->Delete();
+    vbo->Delete();
+    ebo->Delete();
 }
