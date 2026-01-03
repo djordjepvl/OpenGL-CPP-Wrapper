@@ -7,16 +7,14 @@
 Camera::Camera(glm::vec3 position, glm::vec3 direction) {
     this->position = position;
     this->direction = direction;
-    this->up = glm::vec3(0.0f, 1.0f, 0.0f);
+    view = glm::lookAt(position, position + direction, up);
 }
 
-void Camera::update() {
-    
+void Camera::update(float deltaTime) {
+    position.z += deltaTime;
+    view = glm::lookAt(position, position + direction, up);
 }
 void Camera::setProjection(float FOVdeg, float nearPlane, float farPlane) {
-    view = glm::mat4(1.0f);
-    projection = glm::mat4(1.0f);
-    view = glm::lookAt(position, position + direction, up);
     projection = glm::perspective(glm::radians(FOVdeg), (float)((float)WINDOW_WIDTH/(float)WINDOW_HEIGHT), nearPlane, farPlane);
 }
 void Camera::applyProjection(Shader *shader, const char* uniform) {

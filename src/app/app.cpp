@@ -106,6 +106,8 @@ void App::update(float deltaTime, float currentTime) {
     if (Input::isKeyDown(GLFW_KEY_RIGHT)) offsetX += deltaTime;
     if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime;
 
+    camera->update(deltaTime);
+
     model = glm::rotate(model, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
@@ -129,4 +131,5 @@ void App::close() {
     delete vao;
     delete vbo;
     delete ebo;
+    delete camera;
 }

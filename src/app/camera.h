@@ -14,10 +14,10 @@ class Camera {
 
         Camera(glm::vec3 position, glm::vec3 direction);
 
-        void update();
+        void update(float deltaTime);
         void setProjection(float FOVdeg, float nearPlane, float farPlane);
         void applyProjection(Shader *shader, const char* uniform);
     private:
-        glm::mat4 view;
-        glm::mat4 projection;
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
 };
