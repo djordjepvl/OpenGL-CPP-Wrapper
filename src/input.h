@@ -7,6 +7,8 @@ class Input {
         static bool keys[1024];
         static bool mouseButtons[8];
         static double mouseX, mouseY;
+        static double Input::deltaMouseX;
+        static double Input::deltaMouseY;
 
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
         static void mouse_callback(GLFWwindow* window, double xpos, double ypos);

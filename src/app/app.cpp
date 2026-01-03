@@ -98,7 +98,7 @@ void App::init() {
 
     model = glm::mat4(1.0f);
     
-    camera = new Camera(glm::vec3(0.0f, 1.0f, -5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(45.0f, 0.1f, 100.0f);
 }
 
@@ -109,6 +109,11 @@ void App::update(float deltaTime, float currentTime) {
     camera->update(deltaTime);
 
     model = glm::rotate(model, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    Input::mouseX = 0.0f;
+    Input::mouseY = 0.0f;
+    Input::deltaMouseX = 0.0f;
+    Input::deltaMouseY = 0.0f;
 }
 
 void App::render() {

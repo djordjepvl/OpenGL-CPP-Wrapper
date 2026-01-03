@@ -22,6 +22,7 @@ int main() {
     glfwSetKeyCallback(window, Input::key_callback);
     glfwSetCursorPosCallback(window, Input::mouse_callback);
     glfwSetMouseButtonCallback(window, Input::mouse_button_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     float deltaTime = 0.0f;
     float prevTime = 0.0f;

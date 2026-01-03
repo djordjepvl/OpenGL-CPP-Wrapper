@@ -8,9 +8,14 @@ class Camera {
         glm::vec3 position;
         glm::vec3 direction;
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-
+        
         float speed = 0.1f;
-        float sensitivity = 100.0f;
+        float sensitivity = 0.1f;
+        
+        float yaw = -90.0f;
+        float pitch = 0.0f;
+        float lastX = WINDOW_WIDTH / 2.0f;
+        float lastY = WINDOW_HEIGHT / 2.0f;
 
         Camera(glm::vec3 position, glm::vec3 direction);
 
