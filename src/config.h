@@ -8,8 +8,8 @@
 #include <string>
 
 #define WINDOW_NAME "Window"
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 450
+#define WINDOW_WIDTH 1600
+#define WINDOW_HEIGHT 900
 
 const std::string SHADER_PATH = "assets/shaders/";
 const std::string TEXTURE_PATH = "assets/textures/";

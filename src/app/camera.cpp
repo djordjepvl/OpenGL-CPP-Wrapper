@@ -37,6 +37,13 @@ void Camera::update(float deltaTime) {
         position -= glm::normalize(glm::cross(direction, up)) * velocity;
     if (Input::isKeyDown(GLFW_KEY_D))
         position += glm::normalize(glm::cross(direction, up)) * velocity;
+
+
+    if (Input::isKeyDown(GLFW_KEY_SPACE))
+        position += up * velocity;
+
+    if (Input::isKeyDown(GLFW_KEY_LEFT_SHIFT))
+        position -= up * velocity;
     
 
     view = glm::lookAt(position, position + direction, up);
