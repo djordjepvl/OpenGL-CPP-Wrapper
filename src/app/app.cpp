@@ -2,16 +2,17 @@
 
 #include <input.h>
 
+#include <camera.h>
 #include <shader.h>
 #include <texture.h>
 #include <VBO.h>
 #include <VAO.h>
 #include <EBO.h>
 
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 float offsetX = 0.0f;
 GLfloat vertices[] = {
@@ -61,15 +62,14 @@ GLuint indices[] = {
     16, 17, 18, 18, 19, 16,  // Top
     20, 21, 22, 22, 23, 20   // Bottom
 };
+
+Camera *camera;
+
 Shader *shader;
 VBO *vbo;
 VAO *vao;
 EBO *ebo;
-
 glm::mat4 model;
-glm::mat4 view;
-glm::mat4 proj;
-
 Texture *texture;
 
 
@@ -97,12 +97,9 @@ void App::init() {
     ebo->Unbind();
 
     model = glm::mat4(1.0f);
-    view = glm::mat4(1.0f);
-    proj = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, -1.0f, -5.0f));
-    proj = glm::perspective(glm::radians(45.0f), (float)((float)WINDOW_WIDTH/(float)WINDOW_HEIGHT), 0.1f, 100.0f);
-
     
+    camera = new Camera(glm::vec3(0.0f, 1.0f, -5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    camera->setProjection(45.0f, 0.1f, 100.0f);
 }
 
 void App::update(float deltaTime, float currentTime) {
@@ -118,10 +115,8 @@ void App::render() {
 
     GLint modelLoc = glGetUniformLocation(shader->id, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    GLint viewLoc = glGetUniformLocation(shader->id, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    GLint projLoc = glGetUniformLocation(shader->id, "proj");
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+    
+    camera->applyProjection(shader, "camMatrix");
 
     texture->texUnit(shader, "tex0", 0);
     vao->Bind();
