@@ -12,23 +12,24 @@
 #include <glm/gtc/type_ptr.hpp>
 
 float offsetX = 0.0f;
-// Vertices coordinates
-GLfloat vertices[] =
-{
-    -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
-    0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
-    0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
-    -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
-    0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
-    0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
+GLfloat vertices[] = {
+    -0.5f, -0.5f,  0.5f, // 0
+     0.5f, -0.5f,  0.5f, // 1
+     0.5f,  0.5f,  0.5f, // 2
+    -0.5f,  0.5f,  0.5f, // 3
+    -0.5f, -0.5f, -0.5f, // 4
+     0.5f, -0.5f, -0.5f, // 5
+     0.5f,  0.5f, -0.5f, // 6
+    -0.5f,  0.5f, -0.5f  // 7
 };
 
-// Indices for vertices order
-GLuint indices[] =
-{
-    0, 3, 5, // Lower left triangle
-    3, 2, 4, // Upper triangle
-    5, 4, 1 // Lower right triangle
+GLuint indices[] = {
+    0, 1, 2, 2, 3, 0, // Front
+    1, 5, 6, 6, 2, 1, // Right
+    7, 6, 5, 5, 4, 7, // Back
+    4, 0, 3, 3, 7, 4, // Left
+    3, 2, 6, 6, 7, 3, // Top
+    4, 5, 1, 1, 0, 4  // Bottom
 };
 
 Shader *shader;
@@ -59,8 +60,8 @@ void App::init() {
     model = glm::mat4(1.0f);
     view = glm::mat4(1.0f);
     proj = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-    proj = glm::perspective(glm::radians(45.0f), (float)(WINDOW_WIDTH/WINDOW_HEIGHT), 0.1f, 100.0f);
+    view = glm::translate(view, glm::vec3(0.0f, -1.0f, -5.0f));
+    proj = glm::perspective(glm::radians(45.0f), (float)((float)WINDOW_WIDTH/(float)WINDOW_HEIGHT), 0.1f, 100.0f);
 }
 
 void App::update(float deltaTime, float currentTime) {
@@ -86,7 +87,7 @@ void App::render() {
     glUniform3f(uniLoc, offsetX, 0.0f, 0.0f);
 
     vao->Bind();
-    glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 32, GL_UNSIGNED_INT, 0);
 }
 
 void App::close() {
