@@ -99,7 +99,7 @@ void App::init() {
     model = glm::mat4(1.0f);
     
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    camera->setProjection(45.0f, 0.1f, 100.0f);
+    camera->setProjection(70.0f, 0.1f, 100.0f);
 }
 
 void App::update(float deltaTime, float currentTime) {
