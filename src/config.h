@@ -12,3 +12,4 @@
 #define WINDOW_HEIGHT 450
 
 const std::string SHADER_PATH = "assets/shaders/";
+const std::string TEXTURE_PATH = "assets/textures/";
