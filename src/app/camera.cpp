@@ -26,7 +26,17 @@ void Camera::update(float deltaTime) {
     
     direction = glm::normalize(newDir);
 
-    //std::cout << "Pitch: " << pitch << " | DirX: " << direction.x << " DirZ: " << direction.z << std::endl;
+    float velocity = speed * deltaTime;
+
+    if (Input::isKeyDown(GLFW_KEY_W))
+        position += direction * velocity;
+    if (Input::isKeyDown(GLFW_KEY_S))
+        position -= direction * velocity;
+
+    if (Input::isKeyDown(GLFW_KEY_A))
+        position -= glm::normalize(glm::cross(direction, up)) * velocity;
+    if (Input::isKeyDown(GLFW_KEY_D))
+        position += glm::normalize(glm::cross(direction, up)) * velocity;
     
 
     view = glm::lookAt(position, position + direction, up);
