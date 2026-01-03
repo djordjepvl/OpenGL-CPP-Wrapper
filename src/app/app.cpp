@@ -13,14 +13,15 @@
 
 float offsetX = 0.0f;
 GLfloat vertices[] = {
-    -0.5f, -0.5f,  0.5f, // 0
-     0.5f, -0.5f,  0.5f, // 1
-     0.5f,  0.5f,  0.5f, // 2
-    -0.5f,  0.5f,  0.5f, // 3
-    -0.5f, -0.5f, -0.5f, // 4
-     0.5f, -0.5f, -0.5f, // 5
-     0.5f,  0.5f, -0.5f, // 6
-    -0.5f,  0.5f, -0.5f  // 7
+    // Coordinates           // Colors (RGB)
+    -0.5f, -0.5f,  0.5f,     1.0f, 0.0f, 0.0f, // 0 : Red
+     0.5f, -0.5f,  0.5f,     0.0f, 1.0f, 0.0f, // 1 : Green
+     0.5f,  0.5f,  0.5f,     0.0f, 0.0f, 1.0f, // 2 : Blue
+    -0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 0.0f, // 3 : Yellow
+    -0.5f, -0.5f, -0.5f,     1.0f, 0.0f, 1.0f, // 4 : Magenta
+     0.5f, -0.5f, -0.5f,     0.0f, 1.0f, 1.0f, // 5 : Cyan
+     0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f, // 6 : White
+    -0.5f,  0.5f, -0.5f,     0.0f, 0.0f, 0.0f  // 7 : Black
 };
 
 GLuint indices[] = {
@@ -42,7 +43,7 @@ glm::mat4 view;
 glm::mat4 proj;
 
 void App::init() {
-
+    glEnable(GL_DEPTH_TEST);
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
 
     vao = new VAO();
@@ -51,7 +52,8 @@ void App::init() {
     vbo = new VBO(vertices, sizeof(vertices));
     ebo = new EBO(indices, sizeof(indices));
     
-    vao->LinkVBO(vbo, 0);
+    vao->LinkAttrib(vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+    vao->LinkAttrib(vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     vao->Unbind();
 
     vbo->Unbind();
@@ -72,10 +74,8 @@ void App::update(float deltaTime, float currentTime) {
 }
 
 void App::render() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Use();
-    
-    GLint uniLoc = glGetUniformLocation(shader->id, "offset");
 
     GLint modelLoc = glGetUniformLocation(shader->id, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -83,8 +83,6 @@ void App::render() {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     GLint projLoc = glGetUniformLocation(shader->id, "proj");
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
-    glUniform3f(uniLoc, offsetX, 0.0f, 0.0f);
 
     vao->Bind();
     glDrawElements(GL_TRIANGLES, 32, GL_UNSIGNED_INT, 0);
