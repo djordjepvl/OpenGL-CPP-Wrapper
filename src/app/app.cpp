@@ -6,6 +6,11 @@
 #include <VBO.h>
 #include <VAO.h>
 #include <EBO.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 float offsetX = 0.0f;
 // Vertices coordinates
 GLfloat vertices[] =
@@ -31,6 +36,10 @@ VBO *vbo;
 VAO *vao;
 EBO *ebo;
 
+glm::mat4 model;
+glm::mat4 view;
+glm::mat4 proj;
+
 void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
@@ -46,11 +55,19 @@ void App::init() {
 
     vbo->Unbind();
     ebo->Unbind();
+
+    model = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
+    proj = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+    proj = glm::perspective(glm::radians(45.0f), (float)(WINDOW_WIDTH/WINDOW_HEIGHT), 0.1f, 100.0f);
 }
 
 void App::update(float deltaTime, float currentTime) {
     if (Input::isKeyDown(GLFW_KEY_RIGHT)) offsetX += deltaTime;
     if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime;
+
+    model = glm::rotate(model, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void App::render() {
@@ -58,6 +75,14 @@ void App::render() {
     shader->Use();
     
     GLint uniLoc = glGetUniformLocation(shader->id, "offset");
+
+    GLint modelLoc = glGetUniformLocation(shader->id, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    GLint viewLoc = glGetUniformLocation(shader->id, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+    GLint projLoc = glGetUniformLocation(shader->id, "proj");
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+
     glUniform3f(uniLoc, offsetX, 0.0f, 0.0f);
 
     vao->Bind();
