@@ -13,18 +13,20 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction) {
 }
 
 void Camera::update(float deltaTime) {
-    yaw += (float)Input::deltaMouseX * sensitivity; 
+    yaw += (float)Input::deltaMouseX * sensitivity;
+    pitch += (float)Input::deltaMouseY * sensitivity;
 
-    // 2. Rebuild the direction vector using trigonometry
+    if (pitch > 89.0f)  pitch = 89.0f;
+    if (pitch < -89.0f) pitch = -89.0f;
+
     glm::vec3 newDir;
     newDir.x = cos(glm::radians(yaw));
-    newDir.y = 0.0f; // Keep level for now
+    newDir.y = sin(glm::radians(pitch));
     newDir.z = sin(glm::radians(yaw));
     
-    direction = glm::normalize(newDir); // Ensure length is exactly 1.0
+    direction = glm::normalize(newDir);
 
-    // 3. Debug the angle and the resulting vector
-    std::cout << "Yaw: " << yaw << " | DirX: " << direction.x << " DirZ: " << direction.z << std::endl;
+    //std::cout << "Pitch: " << pitch << " | DirX: " << direction.x << " DirZ: " << direction.z << std::endl;
     
 
     view = glm::lookAt(position, position + direction, up);
