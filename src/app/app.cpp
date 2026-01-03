@@ -79,7 +79,7 @@ void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
 
-    texture = new Texture(TEXTURE_PATH + "paulie.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+    texture = new Texture(TEXTURE_PATH + "paulie.png", GL_TEXTURE_2D, 0, GL_UNSIGNED_BYTE);
     texture->Bind();
 
     vao = new VAO();

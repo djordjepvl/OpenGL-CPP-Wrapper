@@ -10,7 +10,7 @@ class Texture
         GLuint id;
         GLenum type;
         GLuint slot;
-        Texture::Texture(const std::string &imagePath, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
+        Texture::Texture(const std::string &imagePath, GLenum texType, GLenum slot, GLenum pixelType);
         ~Texture();
         void texUnit(Shader* shader, const char* uniform, GLuint unit);
         void Bind();
