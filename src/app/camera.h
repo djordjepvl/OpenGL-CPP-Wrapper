@@ -14,8 +14,6 @@ class Camera {
         
         float yaw = -90.0f;
         float pitch = 0.0f;
-        float lastX = WINDOW_WIDTH / 2.0f;
-        float lastY = WINDOW_HEIGHT / 2.0f;
 
         Camera(glm::vec3 position, glm::vec3 direction);
 
