@@ -16,27 +16,32 @@ void Camera::update(float deltaTime) {
     yaw += (float)Input::deltaMouseX * sensitivity;
     pitch += (float)Input::deltaMouseY * sensitivity;
 
-    if (pitch > 89.0f)  pitch = 89.0f;
-    if (pitch < -89.0f) pitch = -89.0f;
+    float pitchCap = 80.0f;
+    if (pitch > pitchCap)  pitch = pitchCap;
+    if (pitch < -pitchCap) pitch = -pitchCap;
 
     glm::vec3 newDir;
-    newDir.x = cos(glm::radians(yaw));
+    newDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     newDir.y = sin(glm::radians(pitch));
-    newDir.z = sin(glm::radians(yaw));
+    newDir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+direction = glm::normalize(newDir);
     
     direction = glm::normalize(newDir);
 
     float velocity = speed * deltaTime;
 
+    glm::vec3 flatDirection = glm::normalize(glm::vec3(direction.x, 0.0f, direction.z));
+
     if (Input::isKeyDown(GLFW_KEY_W))
-        position += direction * velocity;
+        position += flatDirection * velocity;
     if (Input::isKeyDown(GLFW_KEY_S))
-        position -= direction * velocity;
+        position -= flatDirection * velocity;
 
     if (Input::isKeyDown(GLFW_KEY_A))
-        position -= glm::normalize(glm::cross(direction, up)) * velocity;
+        position -= glm::normalize(glm::cross(flatDirection, up)) * velocity;
     if (Input::isKeyDown(GLFW_KEY_D))
-        position += glm::normalize(glm::cross(direction, up)) * velocity;
+        position += glm::normalize(glm::cross(flatDirection, up)) * velocity;
 
 
     if (Input::isKeyDown(GLFW_KEY_SPACE))
