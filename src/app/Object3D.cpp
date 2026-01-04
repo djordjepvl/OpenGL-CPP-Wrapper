@@ -1,10 +1,10 @@
 #include <Object3D.h>
 
-Object3D::Object3D(std::vector<Mesh*> &meshes, Texture *atlasTexture){
+Object3D::Object3D(std::vector<std::shared_ptr<Mesh>> &meshes, std::shared_ptr<Texture> atlasTexture){
     this->meshes = meshes;
     this->atlasTexture = atlasTexture;
 }
-Object3D::Object3D(std::string &stbFilePath, Texture *atlasTexture){
+Object3D::Object3D(std::string &stbFilePath, std::shared_ptr<Texture> atlasTexture){
     //load all meshes from stb file into this new object3d
     //also load the diffuse atlas file that the meshes will share
 }
@@ -23,7 +23,7 @@ void Object3D::Draw(Shader *shader, Camera *camera) {
         atlasTexture->Bind();
     }
     
-    for (Mesh* mesh : meshes) mesh->Draw();
+    for (std::shared_ptr<Mesh> mesh : meshes) mesh->Draw();
 }
 glm::mat4 Object3D::getModelMatrix(){
     glm::mat4 model = glm::mat4(1.0f);

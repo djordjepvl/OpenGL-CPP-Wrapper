@@ -11,7 +11,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 std::vector<Vertex> vertices = {
     // Position                // Color             // UV          // Normal
     // Front face (Z+)
@@ -60,10 +59,10 @@ std::vector<GLuint> indices = {
     20, 21, 22, 22, 23, 20   // Bottom
 };
 
-std::vector<Mesh*> meshes;
-Texture *paulieTexture;
+std::vector<std::shared_ptr<Mesh>> meshes;
+std::shared_ptr<Texture> paulieTexture;
 Camera *camera;
-Object3D *paulieCube;
+Object3D *paulieCube, *paulieCube2;
 Shader *shader;
 float offsetX = 0.0f;
 
@@ -72,11 +71,11 @@ void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
     
-    meshes.emplace_back(new Mesh(vertices, indices));
-    paulieTexture = new Texture(TEXTURE_PATH + "paulie.png", DIFFUSE, 0);
+    auto paulieMesh = std::make_shared<Mesh>(vertices, indices);
+    meshes.push_back(paulieMesh);
+    paulieTexture = std::make_shared<Texture>(TEXTURE_PATH + "paulie.png", DIFFUSE, 0);
     paulieCube = new Object3D(meshes, paulieTexture);
-
-    //for (Mesh *mesh : meshes)
+    paulieCube2 = new Object3D(meshes, paulieTexture);
     
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
@@ -89,6 +88,15 @@ void App::update(float deltaTime, float currentTime) {
     camera->update(deltaTime);
 
     paulieCube->rotation = glm::rotate(paulieCube->rotation, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
+    if (paulieCube2) {
+        paulieCube2->position = glm::vec3(2.0f, 0.0f, 0.0f);
+        paulieCube2->rotation = glm::rotate(paulieCube->rotation, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
+    }
+
+    if (currentTime > 5.0f) {
+        delete paulieCube2;
+        paulieCube2 = nullptr;
+    }
 
     Input::mouseX = 0.0f;
     Input::mouseY = 0.0f;
@@ -101,13 +109,11 @@ void App::render() {
     shader->Use();
     
     paulieCube->Draw(shader, camera);
+    if(paulieCube2) paulieCube2->Draw(shader, camera);
 }
 
 void App::close() {
     delete shader;
     delete camera;
     delete paulieCube;
-
-    for (Mesh *mesh : meshes) delete mesh;
-    delete paulieTexture;
 }

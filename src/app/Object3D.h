@@ -15,11 +15,11 @@ class Object3D {
         glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 scale = glm::vec3(1.0f);
 
-        std::vector<Mesh*> meshes;
-        Texture* atlasTexture = nullptr;
+        std::vector<std::shared_ptr<Mesh>> meshes;
+        std::shared_ptr<Texture> atlasTexture = nullptr;
 
-        Object3D(std::vector<Mesh*> &meshes, Texture *atlasTexture);
-        Object3D(std::string &stbFilePath, Texture *atlasTexture);
+        Object3D(std::vector<std::shared_ptr<Mesh>> &meshes, std::shared_ptr<Texture> atlasTexture);
+        Object3D(std::string &stbFilePath, std::shared_ptr<Texture> atlasTexture);
         ~Object3D();
 
         void Draw(Shader *shader, Camera *camera);
