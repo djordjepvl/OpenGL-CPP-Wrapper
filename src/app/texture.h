@@ -4,15 +4,23 @@
 
 #include <shader.h>
 
+enum TextureType {
+    DIFFUSE,
+    SPECULAR,
+    NORMAL,
+    DIRECTORY
+};
+
 class Texture
 {
     public:
         GLuint id;
-        GLenum type;
+        TextureType type;
+        GLenum glType;
         GLuint slot;
-        Texture::Texture(const std::string &imagePath, GLenum texType, GLenum slot, GLenum pixelType);
+        Texture::Texture(const std::string &imagePath, TextureType texType, GLenum slot, GLenum pixelType);
         ~Texture();
-        void texUnit(Shader* shader, const char* uniform, GLuint unit);
+        void Texture::assignToShader(Shader* shader, const char* uniform);
         void Bind();
         void Unbind();
 };

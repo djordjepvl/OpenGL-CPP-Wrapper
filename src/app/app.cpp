@@ -3,74 +3,68 @@
 #include <input.h>
 
 #include <camera.h>
-#include <shader.h>
-#include <texture.h>
-#include <VBO.h>
-#include <VAO.h>
-#include <EBO.h>
+#include <mesh.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 float offsetX = 0.0f;
-GLfloat vertices[] = {
-    // Coordinates           // Colors           // UVs
+
+std::vector<Vertex> vertices = {
+    // Position                // Color             // UV          // Normal
     // Front face (Z+)
-    -0.5f, -0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // 0
-     0.5f, -0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // 1
-     0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // 2
-    -0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f, // 3
+    {{-0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
 
     // Back face (Z-)
-    -0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // 4
-     0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // 5
-     0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f, // 6
-    -0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // 7
+    {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
+    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
 
     // Left face (X-)
-    -0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // 8
-    -0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f, // 9
-    -0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // 10
-    -0.5f, -0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // 11
+    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+    {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
+    {{-0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
 
     // Right face (X+)
-     0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f, // 12
-     0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // 13
-     0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // 14
-     0.5f, -0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // 15
+    {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
 
     // Top face (Y+)
-    -0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f, // 16
-     0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // 17
-     0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // 18
-    -0.5f,  0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // 19
+    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
 
     // Bottom face (Y-)
-    -0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // 20
-     0.5f, -0.5f, -0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // 21
-     0.5f, -0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // 22
-    -0.5f, -0.5f,  0.5f,     1.0f, 1.0f, 1.0f,   0.0f, 1.0f  // 23
+    {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+    {{-0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}}
 };
 
-GLuint indices[] = {
-    0, 1, 2,  2, 3, 0,       // Front
-    4, 5, 6,  6, 7, 4,       // Back
-    8, 9, 10, 10, 11, 8,     // Left
+std::vector<GLuint> indices = {
+    0,  1,  2,  2,  3,  0,   // Front
+    4,  5,  6,  6,  7,  4,   // Back
+    8,  9,  10, 10, 11, 8,   // Left
     12, 13, 14, 14, 15, 12,  // Right
     16, 17, 18, 18, 19, 16,  // Top
     20, 21, 22, 22, 23, 20   // Bottom
 };
 
+Mesh *mesh;
 Camera *camera;
 
 Shader *shader;
-VBO *vbo;
-VAO *vao;
-EBO *ebo;
 glm::mat4 model;
-Texture *texture;
+std::vector<Texture> textures;
 
 
 
@@ -79,22 +73,9 @@ void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
 
-    texture = new Texture(TEXTURE_PATH + "paulie.png", GL_TEXTURE_2D, 0, GL_UNSIGNED_BYTE);
-    texture->Bind();
+    textures.emplace_back(TEXTURE_PATH + "paulie.png", DIFFUSE, 0, GL_UNSIGNED_BYTE);
 
-    vao = new VAO();
-    vao->Bind();
-
-    vbo = new VBO(vertices, sizeof(vertices));
-    ebo = new EBO(indices, sizeof(indices));
-    
-    vao->LinkAttrib(vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-    vao->LinkAttrib(vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    vao->LinkAttrib(vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    vao->Unbind();
-
-    vbo->Unbind();
-    ebo->Unbind();
+    mesh = new Mesh(vertices, indices, textures);
 
     model = glm::mat4(1.0f);
     
@@ -125,16 +106,11 @@ void App::render() {
     
     camera->applyProjection(shader, "camMatrix");
 
-    texture->texUnit(shader, "tex0", 0);
-    vao->Bind();
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    mesh->Draw(shader, camera);
 }
 
 void App::close() {
     delete shader;
-    delete texture;
-    delete vao;
-    delete vbo;
-    delete ebo;
     delete camera;
+    delete mesh;
 }

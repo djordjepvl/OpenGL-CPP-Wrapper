@@ -29,6 +29,8 @@ add_executable(LearningOpenGL
     src/app/texture.cpp
     src/app/camera.h
     src/app/camera.cpp
+    src/app/mesh.h
+    src/app/mesh.cpp
 )
 
 set(DEPENDENCIES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
