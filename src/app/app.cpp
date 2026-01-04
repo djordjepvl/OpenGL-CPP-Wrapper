@@ -86,11 +86,11 @@ void App::update(float deltaTime, float currentTime) {
     if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime;
 
     camera->update(deltaTime);
-
-    paulieCube->rotation = glm::rotate(paulieCube->rotation, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
+    
+    paulieCube->Rotate(0.0f, offsetX, 0.0f);
     if (paulieCube2) {
-        paulieCube2->position = glm::vec3(2.0f, 0.0f, 0.0f);
-        paulieCube2->rotation = glm::rotate(paulieCube->rotation, glm::radians(offsetX), glm::vec3(0.0f, 1.0f, 0.0f));
+        paulieCube2->SetPosition(2.0f, 0.0f, 0.0f);
+        paulieCube2->Rotate(0.0f, offsetX, 0.0f);
     }
 
     if (currentTime > 5.0f) {
