@@ -1,9 +1,8 @@
 #include <mesh.h>
 
-Mesh::Mesh(std::vector <Vertex> &vertices, std::vector <GLuint> &indices, std::vector <Texture> &texture) {
+Mesh::Mesh(std::vector <Vertex> &vertices, std::vector <GLuint> &indices) {
     this->vertices = vertices;
     this->indices = indices;
-    this->texture = texture;
     
     vao = new VAO();
     vao->Bind();
@@ -28,39 +27,7 @@ Mesh::~Mesh() {
     delete vao;
 }
 
-void Mesh::Draw(Shader *shader, Camera *camera) {
-    shader->Use();
-
-    unsigned int numDiffuse = 0;
-    unsigned int numSpecular = 0;
-    unsigned int numNormal = 0;
-
-    for (unsigned int i = 0; i < texture.size(); i++) {
-        std::string num;
-        std::string name;
-
-        if (texture[i].type == DIFFUSE) {
-            name = "diffuse";
-            num = std::to_string(numDiffuse++);
-        } 
-        else if (texture[i].type == SPECULAR) {
-            name = "specular";
-            num = std::to_string(numSpecular++);
-        }
-        else if (texture[i].type == NORMAL) {
-            name = "normal";
-            num = std::to_string(numNormal++);
-        }
-
-        texture[i].assignToShader(shader, (name + num).c_str());
-        texture[i].Bind();
-    }
-    
-    camera->applyProjection(shader, "camMatrix");
-    
+void Mesh::Draw() {
     vao->Bind();
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    vao->Unbind();
-
-    for (unsigned int i = 0; i < texture.size(); i++) texture[i].Unbind();
 }

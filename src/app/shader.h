@@ -2,6 +2,8 @@
 
 #include <config.h>
 
+#include <camera.h>
+
 class Shader
 {
     public:
@@ -9,4 +11,5 @@ class Shader
         Shader(const std::string &vertexFile, const std::string &fragmentFile);
         ~Shader();
         void Use();
+        void setMat4(const char* uniform, glm::mat4 matrix);
 };

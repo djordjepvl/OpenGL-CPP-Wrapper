@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-Texture::Texture(const std::string& imagePath, TextureType texType, GLuint slot, GLenum pixelType) {
+Texture::Texture(const std::string& imagePath, TextureType texType, GLuint slot) {
     
     this->type = texType;
     this->slot = slot;
@@ -49,7 +49,7 @@ Texture::Texture(const std::string& imagePath, TextureType texType, GLuint slot,
     glTexParameteri(glType, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    glTexImage2D(glType, 0, internalFormat, imgWidth, imgHeight, 0, dataFormat, pixelType, image);
+    glTexImage2D(glType, 0, internalFormat, imgWidth, imgHeight, 0, dataFormat, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(glType);
 
     stbi_image_free(image);

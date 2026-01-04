@@ -2,6 +2,8 @@
 
 #include <fileIO.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 Shader::Shader(const std::string &vertexFile, const std::string &fragmentFile) {
     std::string vertexCodeStr = fileToString(vertexFile);
     std::string fragmentCodeStr = fileToString(fragmentFile);
@@ -47,4 +49,9 @@ Shader::~Shader() {
 
 void Shader::Use() {
     glUseProgram(id);
+}
+
+void Shader::setMat4(const char* uniform, glm::mat4 matrix) {
+    Use();
+    glUniformMatrix4fv(glGetUniformLocation(id, uniform), 1, GL_FALSE, glm::value_ptr(matrix));
 }

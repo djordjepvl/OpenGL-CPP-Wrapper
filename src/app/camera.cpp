@@ -56,8 +56,7 @@ direction = glm::normalize(newDir);
 void Camera::setProjection(float FOVdeg, float nearPlane, float farPlane) {
     projection = glm::perspective(glm::radians(FOVdeg), (float)((float)WINDOW_WIDTH/(float)WINDOW_HEIGHT), nearPlane, farPlane);
 }
-void Camera::applyProjection(Shader *shader, const char* uniform) {
-    shader->Use();
-    glUniformMatrix4fv(glGetUniformLocation(shader->id, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
+glm::mat4 Camera::getCamMatrix() {
+    return projection * view;
 }
 
