@@ -43,4 +43,16 @@ class Object3D {
             glm::vec3 radians = glm::eulerAngles(rotation);
             return glm::degrees(radians);
         }
+        inline void SetRotationX(float pitch) {
+            glm::vec3 euler = GetRotationEuler();
+            SetRotation(pitch, euler.y, euler.z);
+        }
+        inline void SetRotationY(float yaw) {
+            glm::vec3 euler = GetRotationEuler();
+            SetRotation(euler.x, yaw, euler.z);
+        }
+        inline void SetRotationZ(float roll) {
+            glm::vec3 euler = GetRotationEuler();
+            SetRotation(euler.x, euler.y, roll);
+        }
 };

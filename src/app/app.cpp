@@ -60,6 +60,7 @@ std::vector<GLuint> indices = {
 };
 
 std::vector<std::shared_ptr<Mesh>> meshes;
+std::unique_ptr<int> ptr;
 std::shared_ptr<Texture> paulieTexture;
 Camera *camera;
 Object3D *paulieCube, *paulieCube2;
@@ -89,8 +90,9 @@ void App::update(float deltaTime, float currentTime) {
     
     paulieCube->Rotate(0.0f, offsetX, 0.0f);
     if (paulieCube2) {
-        paulieCube2->SetPosition(2.0f, 0.0f, 0.0f);
-        paulieCube2->Rotate(0.0f, offsetX, 0.0f);
+        paulieCube2->position.x = 2.0f;
+        paulieCube2->SetRotationY(45);
+        paulieCube2->Rotate(offsetX, 0.0f, offsetX*0.5f);
     }
 
     if (currentTime > 5.0f) {
