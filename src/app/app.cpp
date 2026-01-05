@@ -63,7 +63,7 @@ std::vector<std::shared_ptr<Mesh>> meshes;
 std::unique_ptr<int> ptr;
 std::shared_ptr<Texture> paulieTexture;
 Camera *camera;
-Object3D *paulieCube, *paulieCube2;
+std::shared_ptr<Object3D> paulieCube, anvil = nullptr;
 Shader *shader;
 float offsetX = 0.0f;
 
@@ -75,9 +75,10 @@ void App::init() {
     auto paulieMesh = std::make_shared<Mesh>(vertices, indices);
     meshes.push_back(paulieMesh);
     paulieTexture = std::make_shared<Texture>(TEXTURE_PATH + "paulie.png", DIFFUSE, 0);
-    paulieCube = new Object3D(meshes, paulieTexture);
-    paulieCube2 = new Object3D(meshes, paulieTexture);
+    paulieCube = std::make_shared<Object3D>(meshes, paulieTexture);
+    anvil = Object3D::LoadGLB("assets/models/Anvil.glb");
     
+
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
 }
@@ -88,17 +89,14 @@ void App::update(float deltaTime, float currentTime) {
 
     camera->update(deltaTime);
     
-    paulieCube->Rotate(0.0f, offsetX, 0.0f);
-    if (paulieCube2) {
-        paulieCube2->position.x = 2.0f;
-        paulieCube2->SetRotationY(45);
-        paulieCube2->Rotate(offsetX, 0.0f, offsetX*0.5f);
+    if (paulieCube) paulieCube->Rotate(0.0f, offsetX, 0.0f);
+    if (anvil) {
+        anvil->position.x = 2.0f;
+        anvil->SetRotationY(45);
+        anvil->Rotate(offsetX, 0.0f, offsetX*0.5f);
     }
 
-    if (currentTime > 5.0f) {
-        delete paulieCube2;
-        paulieCube2 = nullptr;
-    }
+    if (currentTime > 95.0f) anvil = nullptr;
 
     Input::mouseX = 0.0f;
     Input::mouseY = 0.0f;
@@ -110,12 +108,13 @@ void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Use();
     
-    paulieCube->Draw(shader, camera);
-    if(paulieCube2) paulieCube2->Draw(shader, camera);
+    if (paulieCube) paulieCube->Draw(shader, camera);
+    if(anvil) anvil->Draw(shader, camera);
 }
 
 void App::close() {
     delete shader;
     delete camera;
-    delete paulieCube;
+    paulieCube = nullptr;
+    anvil = nullptr;
 }

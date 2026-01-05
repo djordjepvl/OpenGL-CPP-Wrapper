@@ -19,8 +19,7 @@ class Object3D {
         std::shared_ptr<Texture> atlasTexture = nullptr;
 
         Object3D(std::vector<std::shared_ptr<Mesh>> &meshes, std::shared_ptr<Texture> atlasTexture);
-        Object3D(std::string &stbFilePath, std::shared_ptr<Texture> atlasTexture);
-        ~Object3D();
+        static std::shared_ptr<Object3D> LoadGLB(const std::string& path);
 
         void Draw(Shader *shader, Camera *camera);
         glm::mat4 getModelMatrix();

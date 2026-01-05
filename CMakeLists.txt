@@ -42,6 +42,8 @@ target_include_directories(LearningOpenGL PRIVATE
     ${DEPENDENCIES_PATH}/GLAD/include
     ${DEPENDENCIES_PATH}/GLM/include
     ${DEPENDENCIES_PATH}/stb/include
+    ${DEPENDENCIES_PATH}/json/include
+    ${DEPENDENCIES_PATH}/tinygltf/include
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app
