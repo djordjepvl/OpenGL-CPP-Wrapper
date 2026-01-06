@@ -1,8 +1,9 @@
 #include <mesh.h>
 
-Mesh::Mesh(std::vector <Vertex> &vertices, std::vector <GLuint> &indices) {
+Mesh::Mesh(std::vector <Vertex> &vertices, std::vector <GLuint> &indices, std::shared_ptr<Material> material) {
     this->vertices = vertices;
     this->indices = indices;
+    this->material = material;
     
     vao = new VAO();
     vao->Bind();
@@ -27,7 +28,8 @@ Mesh::~Mesh() {
     delete vao;
 }
 
-void Mesh::Draw() {
+void Mesh::Draw(Shader *shader) {
+    if (material) material->Apply(shader);
     vao->Bind();
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

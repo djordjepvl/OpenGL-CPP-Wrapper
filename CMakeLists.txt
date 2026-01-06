@@ -33,6 +33,8 @@ add_executable(LearningOpenGL
     src/app/mesh.cpp
     src/app/Object3D.h
     src/app/Object3D.cpp
+    src/app/material.h
+    src/app/material.cpp
 )
 
 set(DEPENDENCIES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)

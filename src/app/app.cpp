@@ -5,6 +5,7 @@
 #include <camera.h>
 #include <mesh.h>
 #include <texture.h>
+#include <material.h>
 #include <Object3D.h>
 
 #include <glm/glm.hpp>
@@ -62,6 +63,7 @@ std::vector<GLuint> indices = {
 std::vector<std::shared_ptr<Mesh>> meshes;
 std::unique_ptr<int> ptr;
 std::shared_ptr<Texture> paulieTexture;
+std::shared_ptr<Material> paulieMaterial;
 Camera *camera;
 std::shared_ptr<Object3D> paulieCube, anvil = nullptr;
 Shader *shader;
@@ -72,11 +74,11 @@ void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
     
-    auto paulieMesh = std::make_shared<Mesh>(vertices, indices);
+    paulieMaterial = std::make_shared<Material>(std::make_shared<Texture>(TEXTURE_PATH + "paulie.png", DIFFUSE, 0));
+    auto paulieMesh = std::make_shared<Mesh>(vertices, indices, paulieMaterial);
     meshes.push_back(paulieMesh);
-    paulieTexture = std::make_shared<Texture>(TEXTURE_PATH + "paulie.png", DIFFUSE, 0);
-    paulieCube = std::make_shared<Object3D>(meshes, paulieTexture);
-    anvil = Object3D::LoadGLB("assets/models/free_bmw_m3_e30.glb");
+    paulieCube = std::make_shared<Object3D>(meshes);
+    anvil = Object3D::LoadGLB("assets/models/rifle__awp_weapon_model_cs2.glb");
     
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));

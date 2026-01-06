@@ -16,9 +16,8 @@ class Object3D {
         glm::vec3 scale = glm::vec3(1.0f);
 
         std::vector<std::shared_ptr<Mesh>> meshes;
-        std::shared_ptr<Texture> atlasTexture = nullptr;
 
-        Object3D(std::vector<std::shared_ptr<Mesh>> &meshes, std::shared_ptr<Texture> atlasTexture);
+        Object3D(std::vector<std::shared_ptr<Mesh>> &meshes);
         static std::shared_ptr<Object3D> LoadGLB(const std::string& path);
 
         void Draw(Shader *shader, Camera *camera);

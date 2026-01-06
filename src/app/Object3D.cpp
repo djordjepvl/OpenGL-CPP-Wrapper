@@ -7,9 +7,8 @@
 
 
 
-Object3D::Object3D(std::vector<std::shared_ptr<Mesh>> &meshes, std::shared_ptr<Texture> atlasTexture){
+Object3D::Object3D(std::vector<std::shared_ptr<Mesh>> &meshes){
     this->meshes = meshes;
-    this->atlasTexture = atlasTexture;
 }
 
 void Object3D::Draw(Shader *shader, Camera *camera) {
@@ -17,13 +16,8 @@ void Object3D::Draw(Shader *shader, Camera *camera) {
 
     shader->setMat4("model", getModelMatrix());
     shader->setMat4("camMatrix", camera->getCamMatrix());
-
-    if (atlasTexture) {
-        atlasTexture->assignToShader(shader, "diffuse0"); 
-        atlasTexture->Bind();
-    }
     
-    for (std::shared_ptr<Mesh> mesh : meshes) mesh->Draw();
+    for (std::shared_ptr<Mesh> mesh : meshes) mesh->Draw(shader);
 }
 glm::mat4 Object3D::getModelMatrix(){
     glm::mat4 model = glm::mat4(1.0f);
@@ -41,9 +35,11 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path) {
 
     if (!loader.LoadBinaryFromFile(&model, &err, &warn, path)) return nullptr;
 
-    std::vector<std::shared_ptr<Mesh>> meshes;
+    std::map<int, std::shared_ptr<Texture>> loadedTextures;
+    std::vector<std::shared_ptr<Mesh>> loadedMeshes;
 
     for (const auto& gltfMesh : model.meshes) {
+        
         for (const auto& primitive : gltfMesh.primitives) {
             
             // 1. Get Accessors
@@ -93,9 +89,28 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path) {
                 }
             }
 
-            meshes.push_back(std::make_shared<Mesh>(vertices, indices));
+            std::shared_ptr<Material> meshMaterial = nullptr;
+            if (primitive.material >= 0) {
+                const auto& gltfMat = model.materials[primitive.material];
+                int texIdx = gltfMat.pbrMetallicRoughness.baseColorTexture.index;
+
+                if (texIdx >= 0) {
+                    int imgIdx = model.textures[texIdx].source;
+                    
+                    // Check cache first so we don't re-upload to GPU
+                    if (loadedTextures.find(imgIdx) == loadedTextures.end()) {
+                        const auto& img = model.images[imgIdx];
+                        loadedTextures[imgIdx] = std::make_shared<Texture>(
+                            img.image.data(), img.width, img.height, img.component, DIFFUSE, 0
+                        );
+                    }
+                    meshMaterial = std::make_shared<Material>(loadedTextures[imgIdx]);
+                }
+            }
+
+            loadedMeshes.push_back(std::make_shared<Mesh>(vertices, indices, meshMaterial));
         }
     }
     // Still returning nullptr for texture until you're ready to add the glbTexture logic
-    return std::make_shared<Object3D>(meshes, nullptr);
+    return std::make_shared<Object3D>(loadedMeshes);
 }

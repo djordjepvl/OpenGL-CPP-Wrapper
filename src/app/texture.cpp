@@ -2,57 +2,64 @@
 
 #include <stb_image.h>
 
-Texture::Texture(const std::string& imagePath, TextureType texType, GLuint slot) {
-    
-    this->type = texType;
-    this->slot = slot;
-    
-    if (texType == DIRECTORY) {
-        std::cout << "Texture Error: Use Cubemap loader for DIRECTORY types." << std::endl;
-        this->glType = GL_TEXTURE_CUBE_MAP;
-        //TODO: fallback here
-        return; 
-    }
-
+// 1. The Helper (The only place where OpenGL calls live)
+void Texture::init(const unsigned char* data, int width, int height, int numChannels) {
     this->glType = GL_TEXTURE_2D;
 
-    stbi_set_flip_vertically_on_load(true);
-    int imgWidth, imgHeight, imgChannelCnt;
-    unsigned char* image = stbi_load(imagePath.c_str(), &imgWidth, &imgHeight, &imgChannelCnt, 0);
-
-    if (!image || imgChannelCnt < 1 || imgChannelCnt > 4) {
-        std::cout << "Texture: Failed to load " << imagePath << " or invalid channels (" << imgChannelCnt << ")." << std::endl;
-        
-        unsigned char fallback[] = { 255, 0, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 0, 255, 255 };
-        glGenTextures(1, &id);
-        glBindTexture(glType, id);
-        glTexImage2D(glType, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, fallback);
-        glGenerateMipmap(glType);
-        return;
-    }
-
-    GLenum dataFormat;
-    if (imgChannelCnt == 4) dataFormat = GL_RGBA;
-    else if (imgChannelCnt == 3) dataFormat = GL_RGB;
-    else dataFormat = GL_RED;
-
+    GLenum dataFormat = (numChannels == 4) ? GL_RGBA : (numChannels == 3) ? GL_RGB : GL_RED;
     GLint internalFormat = dataFormat;
-    if (type == DIFFUSE) internalFormat = (imgChannelCnt == 4) ? GL_RGBA : GL_RGB;
-    else if (type == SPECULAR) internalFormat = GL_RED; 
-    else if (type == NORMAL) internalFormat = dataFormat; 
+    
+    if (type == DIFFUSE) internalFormat = (numChannels == 4) ? GL_RGBA : GL_RGB;
+    else if (type == SPECULAR) internalFormat = GL_RED;
+    else if (type == NORMAL) internalFormat = dataFormat;
 
     glGenTextures(1, &id);
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(glType, id);
 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Fixes skewed GLB textures
+
     glTexParameteri(glType, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    glTexImage2D(glType, 0, internalFormat, imgWidth, imgHeight, 0, dataFormat, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(glType, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(glType);
-
-    stbi_image_free(image);
     glBindTexture(glType, 0);
+}
+
+// 2. Memory Constructor
+Texture::Texture(const unsigned char* data, int width, int height, int numChannels, TextureType texType, GLuint slot) {
+    this->type = texType;
+    this->slot = slot;
+    init(data, width, height, numChannels);
+}
+
+// 3. File Constructor
+Texture::Texture(const std::string& imagePath, TextureType texType, GLuint slot) {
+    this->type = texType;
+    this->slot = slot;
+
+    if (texType == DIRECTORY) {
+        this->glType = GL_TEXTURE_CUBE_MAP;
+        return; 
+    }
+
+    stbi_set_flip_vertically_on_load(true);
+    int w, h, c;
+    unsigned char* image = stbi_load(imagePath.c_str(), &w, &h, &c, 0);
+
+    if (image) {
+        init(image, w, h, c);
+        stbi_image_free(image);
+    } else {
+        // Fallback logic...
+        unsigned char fallback[] = { 255, 0, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 0, 255, 255 };
+        this->glType = GL_TEXTURE_2D;
+        glGenTextures(1, &id);
+        glBindTexture(glType, id);
+        glTexImage2D(glType, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, fallback);
+        glGenerateMipmap(glType);
+    }
 }
 Texture::~Texture(){
     glDeleteTextures(1, &id);
