@@ -76,7 +76,7 @@ void App::init() {
     meshes.push_back(paulieMesh);
     paulieTexture = std::make_shared<Texture>(TEXTURE_PATH + "paulie.png", DIFFUSE, 0);
     paulieCube = std::make_shared<Object3D>(meshes, paulieTexture);
-    anvil = Object3D::LoadGLB("assets/models/Anvil.glb");
+    anvil = Object3D::LoadGLB("assets/models/free_bmw_m3_e30.glb");
     
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
