@@ -19,10 +19,13 @@ float offsetX = 0.0f;
 
 void App::init() {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CW);
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
     
-    anvil = Object3D::LoadGLB("assets/models/anvil.glb", {-2, 0, 0}, 0.5);
+    anvil = Object3D::LoadGLB("assets/models/rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 0.5);
     combi = Object3D::LoadGLB("assets/models/combi.glb", {2,0,0}, 6, {90,-90,0});
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -37,11 +40,7 @@ void App::update(float deltaTime, float currentTime) {
     camera->update(deltaTime);
     
     if (anvil) anvil->Rotate(0.0f, offsetX, 0.0f);
-    if (combi) {
-        combi->Rotate(offsetX, 0.0f, 0.0f);
-    }
-
-    if (currentTime > 95.0f) combi = nullptr;
+    if (combi) combi->Rotate(0.0f, offsetX, 0.0f);
 
     Input::mouseX = 0.0f;
     Input::mouseY = 0.0f;
