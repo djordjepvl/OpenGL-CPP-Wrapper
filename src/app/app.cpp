@@ -12,60 +12,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-std::vector<Vertex> vertices = {
-    // Position                // Color             // UV          // Normal
-    // Front face (Z+)
-    {{-0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-    {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-    {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-    
-    // Back face (Z-)
-    {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
-    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
-    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
-    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
-    
-    // Left face (X-)
-    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
-    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
-    {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
-    {{-0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
-    
-    // Right face (X+)
-    {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
-    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
-    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-    {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-    
-    // Top face (Y+)
-    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
-    {{ 0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
-    {{ 0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f,  0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-    
-    // Bottom face (Y-)
-    {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
-    {{ 0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
-    {{ 0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
-    {{-0.5f, -0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}}
-};
-
-std::vector<GLuint> indices = {
-    0,  1,  2,  2,  3,  0,   // Front
-    4,  5,  6,  6,  7,  4,   // Back
-    8,  9,  10, 10, 11, 8,   // Left
-    12, 13, 14, 14, 15, 12,  // Right
-    16, 17, 18, 18, 19, 16,  // Top
-    20, 21, 22, 22, 23, 20   // Bottom
-};
-
-std::vector<std::shared_ptr<Mesh>> meshes;
-std::unique_ptr<int> ptr;
-std::shared_ptr<Texture> paulieTexture;
-std::shared_ptr<Material> paulieMaterial;
 Camera *camera;
-std::shared_ptr<Object3D> paulieCube, anvil = nullptr;
+std::shared_ptr<Object3D> anvil, combi = nullptr;
 Shader *shader;
 float offsetX = 0.0f;
 
@@ -74,12 +22,13 @@ void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
     
-    paulieMaterial = std::make_shared<Material>(std::make_shared<Texture>(TEXTURE_PATH + "paulie.png", DIFFUSE, 0));
-    auto paulieMesh = std::make_shared<Mesh>(vertices, indices, paulieMaterial);
-    meshes.push_back(paulieMesh);
-    paulieCube = std::make_shared<Object3D>(meshes);
-    anvil = Object3D::LoadGLB("assets/models/rifle__awp_weapon_model_cs2.glb");
-    
+    anvil = Object3D::LoadGLB("assets/models/anvil.glb");
+    anvil->position.x = -2.0f;
+    anvil->SetScale(0.5f);
+    combi = Object3D::LoadGLB("assets/models/combi.glb");
+    combi->position.x = 2.0f;
+    combi->SetScale(6.0f);
+    combi->SetRotation(90.0f, -90.0f, 0.0f);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
@@ -91,14 +40,12 @@ void App::update(float deltaTime, float currentTime) {
 
     camera->update(deltaTime);
     
-    if (paulieCube) paulieCube->Rotate(0.0f, offsetX, 0.0f);
-    if (anvil) {
-        anvil->position.x = 2.0f;
-        anvil->SetRotationY(45);
-        anvil->Rotate(offsetX, 0.0f, offsetX*0.5f);
+    if (anvil) anvil->Rotate(0.0f, offsetX, 0.0f);
+    if (combi) {
+        combi->Rotate(offsetX, 0.0f, 0.0f);
     }
 
-    if (currentTime > 95.0f) anvil = nullptr;
+    if (currentTime > 95.0f) combi = nullptr;
 
     Input::mouseX = 0.0f;
     Input::mouseY = 0.0f;
@@ -110,13 +57,13 @@ void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shader->Use();
     
-    if (paulieCube) paulieCube->Draw(shader, camera);
-    if(anvil) anvil->Draw(shader, camera);
+    if (anvil) anvil->Draw(shader, camera);
+    if(combi) combi->Draw(shader, camera);
 }
 
 void App::close() {
     delete shader;
     delete camera;
-    paulieCube = nullptr;
     anvil = nullptr;
+    combi = nullptr;
 }

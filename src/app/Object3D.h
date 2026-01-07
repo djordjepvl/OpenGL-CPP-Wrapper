@@ -27,15 +27,26 @@ class Object3D {
         inline void Move(glm::vec3 vec) { position += vec; }
         inline void Scale (float x, float y, float z) { scale *= glm::vec3(x,y,z); }
         inline void Scale (glm::vec3 vec) { scale *= vec; }
-        inline void Rotate(float x, float y, float z) { rotation = rotation * glm::quat(glm::radians(glm::vec3(x, y, z))); }
-        inline void Rotate(glm::vec3 vec) { rotation = rotation * glm::quat(glm::radians(vec));; }
+        inline void Rotate(float x, float y, float z) { rotation = glm::quat(glm::radians(glm::vec3(x,y,z))) * rotation; }
+        inline void Rotate(glm::vec3 vec) { rotation = glm::quat(glm::radians(vec)) * rotation; }
         
         inline void SetPosition(float x, float y, float z) { position = glm::vec3(x,y,z); }
         inline void SetPosition(glm::vec3 vec) { position = vec; }
         inline void SetScale(float x, float y, float z) { scale = glm::vec3(x,y,z); }
+        inline void SetScale(float s) { scale = glm::vec3(s,s,s); }
         inline void SetScale(glm::vec3 vec) { scale = vec; }
-        inline void SetRotation(float pitch, float yaw, float roll) { rotation = glm::quat(glm::vec3(glm::radians(pitch), glm::radians(yaw), glm::radians(roll))); }
-        inline void SetRotation(glm::vec3 vec) { rotation = glm::quat(glm::vec3(glm::radians(vec.x), glm::radians(vec.y), glm::radians(vec.z))); }
+        inline void SetRotation(float pitch, float yaw, float roll) {
+            glm::quat qX = glm::angleAxis(glm::radians(pitch), glm::vec3(1, 0, 0));
+            glm::quat qY = glm::angleAxis(glm::radians(yaw),   glm::vec3(0, 1, 0));
+            glm::quat qZ = glm::angleAxis(glm::radians(roll),  glm::vec3(0, 0, 1));
+            this->rotation = qY * qX * qZ; 
+        }
+        inline void SetRotation(glm::vec3 vec) {
+            glm::quat qX = glm::angleAxis(glm::radians(vec.x), glm::vec3(1, 0, 0));
+            glm::quat qY = glm::angleAxis(glm::radians(vec.y),   glm::vec3(0, 1, 0));
+            glm::quat qZ = glm::angleAxis(glm::radians(vec.z),  glm::vec3(0, 0, 1));
+            this->rotation = qY * qX * qZ; 
+        }
 
         inline glm::vec3 GetRotationEuler() {
             glm::vec3 radians = glm::eulerAngles(rotation);

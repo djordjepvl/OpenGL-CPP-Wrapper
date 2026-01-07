@@ -66,16 +66,16 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path) {
             std::vector<Vertex> vertices;
             for (size_t i = 0; i < posAcc.count; i++) {
                 Vertex v;
-                // Correctly jump memory using the stride
-                const float* p = (const float*)(posBase + (i * posStride));
-                const float* n = (const float*)(normBase + (i * normStride));
-                const float* u = (const float*)(uvBase + (i * uvStride));
-
-                v.position = glm::vec3(p[0], p[1], p[2]);
-                v.normal   = glm::vec3(n[0], n[1], n[2]);
-                // Flip UV Y-axis for OpenGL
-                v.UV       = glm::vec2(u[0], 1.0f - u[1]); 
-                v.color    = glm::vec3(1.0f); 
+                
+                float* pos = (float*)(posBase + i * posStride);
+                v.position = glm::vec3(pos[0], pos[1], pos[2]);
+                
+                float* norm = (float*)(normBase + i * normStride);
+                v.normal = glm::vec3(norm[0], norm[1], norm[2]);
+                
+                float* uv = (float*)(uvBase + i * uvStride);
+                v.UV = glm::vec2(uv[0], uv[1]);
+                
                 vertices.push_back(v);
             }
 
