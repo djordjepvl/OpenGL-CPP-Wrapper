@@ -35,6 +35,8 @@ add_executable(LearningOpenGL
     src/app/Object3D.cpp
     src/app/material.h
     src/app/material.cpp
+    src/app/skybox.h
+    src/app/skybox.cpp
 )
 
 set(DEPENDENCIES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
