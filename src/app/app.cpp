@@ -22,21 +22,17 @@ void App::init() {
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
     
-    anvil = Object3D::LoadGLB("assets/models/anvil.glb");
-    anvil->position.x = -2.0f;
-    anvil->SetScale(0.5f);
-    combi = Object3D::LoadGLB("assets/models/combi.glb");
-    combi->position.x = 2.0f;
-    combi->SetScale(6.0f);
-    combi->SetRotation(90.0f, -90.0f, 0.0f);
+    anvil = Object3D::LoadGLB("assets/models/anvil.glb", {-2, 0, 0}, 0.5);
+    combi = Object3D::LoadGLB("assets/models/combi.glb", {2,0,0}, 6, {90,-90,0});
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
 }
 
 void App::update(float deltaTime, float currentTime) {
-    if (Input::isKeyDown(GLFW_KEY_RIGHT)) offsetX += deltaTime;
-    if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime;
+    if (Input::isKeyDown(GLFW_KEY_RIGHT)) offsetX += deltaTime*4;
+    if (Input::isKeyDown(GLFW_KEY_LEFT)) offsetX -= deltaTime*4;
+    offsetX *= 0.99f;
 
     camera->update(deltaTime);
     

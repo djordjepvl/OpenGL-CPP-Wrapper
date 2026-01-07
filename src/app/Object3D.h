@@ -18,7 +18,12 @@ class Object3D {
         std::vector<std::shared_ptr<Mesh>> meshes;
 
         Object3D(std::vector<std::shared_ptr<Mesh>> &meshes);
-        static std::shared_ptr<Object3D> LoadGLB(const std::string& path);
+        static std::shared_ptr<Object3D> LoadGLB(
+            const std::string& path, 
+            glm::vec3 pos = {0.0f, 0.0f, 0.0f}, // Initializer list default
+            float s = 1.0f, 
+            glm::vec3 rot = {0.0f, 0.0f, 0.0f}
+        );
 
         void Draw(Shader *shader, Camera *camera);
         glm::mat4 getModelMatrix();

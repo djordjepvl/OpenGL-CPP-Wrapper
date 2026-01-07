@@ -6,7 +6,6 @@
 #include <tiny_gltf.h>
 
 
-
 Object3D::Object3D(std::vector<std::shared_ptr<Mesh>> &meshes){
     this->meshes = meshes;
 }
@@ -28,7 +27,12 @@ glm::mat4 Object3D::getModelMatrix(){
 }
 
 
-std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path) {
+std::shared_ptr<Object3D> Object3D::LoadGLB(
+    const std::string& path, 
+    glm::vec3 pos, 
+    float s, 
+    glm::vec3 rot
+) {
     tinygltf::Model model;
     tinygltf::TinyGLTF loader;
     std::string err, warn;
@@ -112,5 +116,13 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path) {
         }
     }
     // Still returning nullptr for texture until you're ready to add the glbTexture logic
-    return std::make_shared<Object3D>(loadedMeshes);
+
+    auto obj = std::make_shared<Object3D>(loadedMeshes);
+    
+    // 2. Apply the optional transforms
+    obj->position = pos;
+    obj->SetScale(s);
+    obj->SetRotation(rot.x, rot.y, rot.z);
+    
+    return obj;
 }
