@@ -24,7 +24,7 @@ void App::init() {
     glFrontFace(GL_CW);
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "light.frag");
-    shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -0.5f, -0.2f))); 
+    shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -0.8f, -0.2f))); 
     shader->setVec3("sunColor", {1.0, 1.0, 0.95});
     shader->setFloat("sunIntensity", 3.6f);
     shader->setVec3("ambientColor", {0.082, 0.549, 0.929});

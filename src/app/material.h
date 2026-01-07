@@ -2,12 +2,13 @@
 
 #include <config.h>
 #include <texture.h>
+#include <map>
 
 class Material {
     public:
-        std::shared_ptr<Texture> diffuseMap;
+        std::shared_ptr<Texture> diffuseMap, specularMap, normalMap;
         
-        Material(std::shared_ptr<Texture> diffuse);
+        Material(const std::map<int, std::shared_ptr<Texture>>& textures);
 
         void Apply(Shader *shader);
 };

@@ -14,7 +14,7 @@ void Texture::init(const unsigned char* data, int width, int height, int numChan
     else if (type == NORMAL) internalFormat = dataFormat;
 
     glGenTextures(1, &id);
-    glActiveTexture(GL_TEXTURE0 + slot);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(glType, id);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Fixes skewed GLB textures
@@ -30,14 +30,12 @@ void Texture::init(const unsigned char* data, int width, int height, int numChan
 // 2. Memory Constructor
 Texture::Texture(const unsigned char* data, int width, int height, int numChannels, TextureType texType, GLuint slot) {
     this->type = texType;
-    this->slot = slot;
     init(data, width, height, numChannels);
 }
 
 // 3. File Constructor
 Texture::Texture(const std::string& imagePath, TextureType texType, GLuint slot) {
     this->type = texType;
-    this->slot = slot;
 
     if (texType == DIRECTORY) {
         this->glType = GL_TEXTURE_CUBE_MAP;
@@ -65,11 +63,11 @@ Texture::~Texture(){
     glDeleteTextures(1, &id);
 }
 
-void Texture::assignToShader(Shader* shader, const char* uniform){
+void Texture::assignToShader(Shader* shader, const std::string &uniform, GLuint slot){
     shader->Use();
-    glUniform1i(glGetUniformLocation(shader->id, uniform), slot);
+    glUniform1i(glGetUniformLocation(shader->id, uniform.c_str()), slot);
 }
-void Texture::Bind(){
+void Texture::Bind(GLuint slot){
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(glType, id);
 }

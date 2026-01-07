@@ -96,26 +96,42 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(
             std::shared_ptr<Material> meshMaterial = nullptr;
             if (primitive.material >= 0) {
                 const auto& gltfMat = model.materials[primitive.material];
-                int texIdx = gltfMat.pbrMetallicRoughness.baseColorTexture.index;
 
-                if (texIdx >= 0) {
+                // Helper to load/cache and attach
+                auto loadTex = [&](int texIdx, TextureType type) {
+                    if (texIdx < 0) return;
                     int imgIdx = model.textures[texIdx].source;
+
+                    // Cache by imgIdx AND type to handle sRGB vs Linear correctly
+                    std::string cacheKey = std::to_string(imgIdx) + "_" + std::to_string(type);
                     
-                    // Check cache first so we don't re-upload to GPU
                     if (loadedTextures.find(imgIdx) == loadedTextures.end()) {
                         const auto& img = model.images[imgIdx];
+                        
+                        // CRITICAL: Diffuse uses sRGB, Normals/Specular use Linear
+                        bool useSRGB = (type == DIFFUSE); 
+
                         loadedTextures[imgIdx] = std::make_shared<Texture>(
-                            img.image.data(), img.width, img.height, img.component, DIFFUSE, 0
+                            img.image.data(), img.width, img.height, img.component, type, useSRGB
                         );
                     }
-                    meshMaterial = std::make_shared<Material>(loadedTextures[imgIdx]);
-                }
+                };
+
+                // 1. Base Color (Diffuse)
+                loadTex(gltfMat.pbrMetallicRoughness.baseColorTexture.index, DIFFUSE);
+
+                // 2. Normal Map
+                loadTex(gltfMat.normalTexture.index, NORMAL);
+
+                // 3. Metallic-Roughness (Often contains AO in the Red channel)
+                loadTex(gltfMat.pbrMetallicRoughness.metallicRoughnessTexture.index, SPECULAR);
+
+                meshMaterial = std::make_shared<Material> (loadedTextures);
             }
 
             loadedMeshes.push_back(std::make_shared<Mesh>(vertices, indices, meshMaterial));
         }
     }
-    // Still returning nullptr for texture until you're ready to add the glbTexture logic
 
     auto obj = std::make_shared<Object3D>(loadedMeshes);
     
