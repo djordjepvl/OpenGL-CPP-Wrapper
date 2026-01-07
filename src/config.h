@@ -13,3 +13,4 @@
 
 const std::string SHADER_PATH = "assets/shaders/";
 const std::string TEXTURE_PATH = "assets/textures/";
+const std::string MODEL_PATH = "assets/models/";

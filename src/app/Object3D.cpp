@@ -37,8 +37,10 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(
     tinygltf::TinyGLTF loader;
     std::string err, warn;
 
-    if (!loader.LoadBinaryFromFile(&model, &err, &warn, path)) return nullptr;
-
+    if (!loader.LoadBinaryFromFile(&model, &err, &warn, path)) {
+        std::cout << "Object3D: Could not find model \" " << path << "\"" << std::endl;
+        return nullptr;
+    }
     std::map<int, std::shared_ptr<Texture>> loadedTextures;
     std::vector<std::shared_ptr<Mesh>> loadedMeshes;
 

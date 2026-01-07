@@ -39,7 +39,7 @@ void main() {
 
    vec3 ambient = ambientColor * ambientIntensity;
    vec3 diffuse = sunColor * diff * sunIntensity;
-   vec3 specular = sunColor * spec * 10;
+   vec3 specular = sunColor * spec * 2;
    vec3 lighting = ambient + diffuse + specular;
 
    //FragColor = vec4(specular,1.0f);

@@ -20,7 +20,7 @@ void Texture::init(const unsigned char* data, int width, int height, int numChan
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Fixes skewed GLB textures
 
     glTexParameteri(glType, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(glType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     glTexImage2D(glType, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(glType);
