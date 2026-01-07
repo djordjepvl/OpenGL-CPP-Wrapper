@@ -23,7 +23,12 @@ void App::init() {
     glCullFace(GL_FRONT);
     glFrontFace(GL_CW);
 
-    shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "default.frag");
+    shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "light.frag");
+    shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -0.5f, -0.2f))); 
+    shader->setVec3("sunColor", {1.0, 1.0, 0.95});
+    shader->setFloat("sunIntensity", 3.6f);
+    shader->setVec3("ambientColor", {0.082, 0.549, 0.929});
+    shader->setFloat("ambientIntensity", 3.0f);
     
     anvil = Object3D::LoadGLB("assets/models/rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 0.5);
     combi = Object3D::LoadGLB("assets/models/combi.glb", {2,0,0}, 6, {90,-90,0});

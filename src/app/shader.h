@@ -11,5 +11,7 @@ class Shader
         Shader(const std::string &vertexFile, const std::string &fragmentFile);
         ~Shader();
         void Use();
-        void setMat4(const char* uniform, glm::mat4 matrix);
+        void setMat4(const std::string& uniform, glm::mat4 matrix);
+        void setVec3(const std::string& name, const glm::vec3& value);
+        void setFloat(const std::string& name, const GLfloat value);
 };

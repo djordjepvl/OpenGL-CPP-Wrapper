@@ -14,7 +14,7 @@ uniform mat4 camMatrix;
 
 void main() {
     pos = vec3(model * vec4(aPos, 1.0f));
-    normal = aNormal;
+    normal = mat3(transpose(inverse(model))) * aNormal;
     uv = aUV;
     color = aColor;
     
