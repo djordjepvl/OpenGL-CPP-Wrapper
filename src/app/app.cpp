@@ -29,7 +29,7 @@ void App::init() {
     shader->setVec3("sunColor", {1.0, 1.0, 0.95});
     shader->setFloat("sunIntensity", 5.0f);
     shader->setVec3("ambientColor", {0.141, 0.467, 0.820});
-    shader->setFloat("ambientIntensity", 3.0f);
+    shader->setFloat("ambientIntensity", 0.0f);
 
     skyboxShader = new Shader(SHADER_PATH + "skybox.vert", SHADER_PATH + "skybox.frag");
     skybox = new Skybox("assets/cubemaps/above_the_sea");
@@ -62,6 +62,8 @@ void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     shader->Use();
+    skybox->cubemap->assignToShader(shader, "skybox", 10);
+    skybox->cubemap->Bind(10);
     
     if (anvil) anvil->Draw(shader, camera);
     if(combi) combi->Draw(shader, camera);

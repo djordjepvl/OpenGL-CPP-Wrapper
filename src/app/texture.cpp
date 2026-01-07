@@ -9,7 +9,7 @@ void Texture::init(const unsigned char* data, int width, int height, int numChan
     GLint internalFormat = dataFormat;
     
     if (type == DIFFUSE) internalFormat = (numChannels == 4) ? GL_SRGB_ALPHA : GL_SRGB;
-    else if (type == SPECULAR) internalFormat = GL_RED;
+    else if (type == SPECULAR) internalFormat = GL_RGB;
     else if (type == NORMAL) internalFormat = dataFormat;
 
     glGenTextures(1, &id);
