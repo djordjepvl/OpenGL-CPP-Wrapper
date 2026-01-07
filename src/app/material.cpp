@@ -19,4 +19,6 @@ void Material::Apply(Shader *shader){
     };
     
     bindMap(diffuseMap, "diffuse0");
+    bindMap(specularMap, "specular0");
+    bindMap(normalMap, "normal0");
 }

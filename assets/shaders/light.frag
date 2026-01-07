@@ -25,4 +25,5 @@ void main() {
    float brightness = max(dot(N, L), 0) *sunIntensity;
    vec3 lighting = ambientColor * ambientIntensity + (sunColor * brightness);
    FragColor = vec4(tex.rgb * lighting, tex.a);
+   //FragColor = texture(specular0, uv);
 }

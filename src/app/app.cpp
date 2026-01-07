@@ -30,7 +30,7 @@ void App::init() {
     shader->setVec3("ambientColor", {0.082, 0.549, 0.929});
     shader->setFloat("ambientIntensity", 3.0f);
     
-    anvil = Object3D::LoadGLB("assets/models/rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 0.5);
+    anvil = Object3D::LoadGLB("assets/models/rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
     combi = Object3D::LoadGLB("assets/models/combi.glb", {2,0,0}, 6, {90,-90,0});
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
