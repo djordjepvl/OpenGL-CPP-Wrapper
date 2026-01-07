@@ -25,17 +25,17 @@ void App::init() {
     glClearColor(0.062f, 0.449f, 0.729f, 1.0f);
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "light.frag");
-    shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -1.2f, -0.2f))); 
+    shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -0.2f, 0.0f))); 
     shader->setVec3("sunColor", {1.0, 1.0, 0.95});
     shader->setFloat("sunIntensity", 5.0f);
     shader->setVec3("ambientColor", {0.141, 0.467, 0.820});
-    shader->setFloat("ambientIntensity", 0.0f);
+    shader->setFloat("ambientIntensity", 2.0f);
 
     skyboxShader = new Shader(SHADER_PATH + "skybox.vert", SHADER_PATH + "skybox.frag");
     skybox = new Skybox("assets/cubemaps/above_the_sea");
     
     anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
-    combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {90,-90,0});
+    combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
