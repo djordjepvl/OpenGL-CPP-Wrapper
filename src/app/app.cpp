@@ -22,6 +22,7 @@ void App::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CW);
+    glClearColor(0.062f, 0.449f, 0.729f, 1.0f);
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "light.frag");
     shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -0.8f, -0.2f))); 
@@ -43,6 +44,7 @@ void App::update(float deltaTime, float currentTime) {
     offsetX *= 0.99f;
 
     camera->update(deltaTime);
+    shader->setVec3("camPosition", camera->position);
     
     if (anvil) anvil->Rotate(0.0f, offsetX, 0.0f);
     if (combi) combi->Rotate(0.0f, offsetX, 0.0f);
@@ -55,6 +57,7 @@ void App::update(float deltaTime, float currentTime) {
 
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
     shader->Use();
     
     if (anvil) anvil->Draw(shader, camera);
