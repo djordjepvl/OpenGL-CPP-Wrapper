@@ -23,14 +23,14 @@ uniform float ambientIntensity;
 uniform vec3 camPosition;
 
 float ShadowCalculation(vec4 FragPosLightSpace) {
-    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5;
-
-    float closestDepth = texture(shadowMap, projCoords.xy).r; 
-    float currentDepth = projCoords.z;
-
-    float bias = 0.005;
-    return currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+   
+   vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+   projCoords = projCoords * 0.5 + 0.5;
+   if(projCoords.z > 1.0) return 0.0;
+   float closestDepth = texture(shadowMap, projCoords.xy).r; 
+   float currentDepth = projCoords.z;
+   float bias = 0.005;
+   return currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 }
 
 void main() {
