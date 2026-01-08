@@ -40,7 +40,7 @@ void App::init() {
 
     shadowShader = new Shader(SHADER_PATH + "shadow.vert", SHADER_PATH + "shadow.frag");
     shadowMap = new ShadowMap();
-    shadowMap->init(2048*2);
+    shadowMap->init(2048*4);
     
     anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
     combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
