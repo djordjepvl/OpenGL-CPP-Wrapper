@@ -25,19 +25,24 @@ uniform vec3 camPosition;
 float ShadowCalculation(vec4 FragPosLightSpace, vec3 N, vec3 L) {
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
+    
     if(projCoords.z > 1.0) return 0.0;
 
-    float currentDepth = projCoords.z;
-    float bias = 0.001;
+    float bias = max(0.001 * (1.0 - dot(N, L)), 0.0001);
+
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    vec3 normalOffset = N * (bias * 1.5); 
+    vec3 offsetCoords = (projCoords + normalOffset);
 
     float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    
     for(int x = -1; x <= 1; ++x) {
         for(int y = -1; y <= 1; ++y) {
-            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+            float pcfDepth = texture(shadowMap, offsetCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += (projCoords.z - bias) > pcfDepth ? 1.0 : 0.0;        
         }    
     }
+    
     return shadow / 9.0;
 }
 

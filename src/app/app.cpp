@@ -24,9 +24,7 @@ float offsetX = 0.0f;
 
 void App::init() {
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    
 
     shader = new Shader(SHADER_PATH + "light.vert", SHADER_PATH + "light.frag");
     shader->setVec3("sunDir", sunDir); 
@@ -42,8 +40,8 @@ void App::init() {
     shadowMap = new ShadowMap();
     shadowMap->init(2048*4);
     
-    anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 7);
-    //combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
+    anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
+    combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
     plane = Object3D::LoadGLB(MODEL_PATH + "plane.glb", {0,-2.5,0}, 20);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -69,7 +67,9 @@ void App::update(float deltaTime, float currentTime) {
 
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);
     shadowShader->Use();
     shadowShader->setMat4("shadowMatrix", shadowMap->matrix);
     
@@ -79,7 +79,9 @@ void App::render() {
     if(plane) plane->Draw(shadowShader);
     shadowMap->unbind();
     
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
