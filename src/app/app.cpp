@@ -14,6 +14,7 @@
 glm::vec3 sunDir = glm::normalize(glm::vec3(-0.3f, -0.2f, 0.0f));
 
 Shader *shader;
+Shader *shadowShader;
 Shader *skyboxShader;
 Skybox *skybox;
 ShadowMap *shadowMap;
@@ -26,18 +27,18 @@ void App::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CW);
-    glClearColor(0.062f, 0.449f, 0.729f, 1.0f);
 
-    shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "light.frag");
+    shader = new Shader(SHADER_PATH + "light.vert", SHADER_PATH + "light.frag");
     shader->setVec3("sunDir", sunDir); 
     shader->setVec3("sunColor", {1.0, 1.0, 0.95});
-    shader->setFloat("sunIntensity", 5.0f);
+    shader->setFloat("sunIntensity", 3.2f);
     shader->setVec3("ambientColor", {0.141, 0.467, 0.820});
-    shader->setFloat("ambientIntensity", 2.0f);
+    shader->setFloat("ambientIntensity", 6.0f);
 
     skyboxShader = new Shader(SHADER_PATH + "skybox.vert", SHADER_PATH + "skybox.frag");
     skybox = new Skybox("assets/cubemaps/above_the_sea");
 
+    shadowShader = new Shader(SHADER_PATH + "shadow.vert", SHADER_PATH + "shadow.frag");
     shadowMap = new ShadowMap();
     shadowMap->init(2048);
     
@@ -69,12 +70,27 @@ void App::update(float deltaTime, float currentTime) {
 
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    shadowShader->Use();
+    shadowShader->setMat4("shadowMatrix", shadowMap->matrix);
+
+    shadowMap->bind();
+    if (anvil) anvil->Draw(shadowShader);
+    if(combi) combi->Draw(shadowShader);
+    if(plane) plane->Draw(shadowShader);
+    shadowMap->unbind();
+
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     shader->setMat4("camMatrix", camera->matrix);
+    shader->setMat4("shadowMatrix", shadowMap->matrix);
     
     skybox->cubemap->assignToShader(shader, "skybox", 10);
     skybox->cubemap->Bind(10);
 
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, shadowMap->depthMap);
+    shader->setInt("shadowMap", 11);
     
     if (anvil) anvil->Draw(shader);
     if(combi) combi->Draw(shader);
