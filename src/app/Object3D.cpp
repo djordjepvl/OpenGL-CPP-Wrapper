@@ -10,11 +10,10 @@ Object3D::Object3D(std::vector<std::shared_ptr<Mesh>> &meshes){
     this->meshes = meshes;
 }
 
-void Object3D::Draw(Shader *shader, Camera *camera) {
+void Object3D::Draw(Shader *shader) {
     shader->Use();
 
     shader->setMat4("model", getModelMatrix());
-    shader->setMat4("camMatrix", camera->getCamMatrix());
     
     for (std::shared_ptr<Mesh> mesh : meshes) mesh->Draw(shader);
 }
@@ -26,10 +25,6 @@ glm::mat4 Object3D::getModelMatrix(){
     return model;
 }
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
 
 std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 pos, float s, glm::vec3 rot) {
     tinygltf::Model model;

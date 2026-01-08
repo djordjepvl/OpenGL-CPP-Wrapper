@@ -5,16 +5,20 @@
 #include <camera.h>
 #include <Object3D.h>
 #include <skybox.h>
+#include <shadowMap.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+glm::vec3 sunDir = glm::normalize(glm::vec3(-0.3f, -0.2f, 0.0f));
+
 Shader *shader;
 Shader *skyboxShader;
 Skybox *skybox;
+ShadowMap *shadowMap;
 Camera *camera;
-std::shared_ptr<Object3D> anvil, combi = nullptr;
+std::shared_ptr<Object3D> anvil, combi, plane = nullptr;
 float offsetX = 0.0f;
 
 void App::init() {
@@ -25,7 +29,7 @@ void App::init() {
     glClearColor(0.062f, 0.449f, 0.729f, 1.0f);
 
     shader = new Shader(SHADER_PATH + "default.vert", SHADER_PATH + "light.frag");
-    shader->setVec3("sunDir", glm::normalize(glm::vec3(-0.3f, -0.2f, 0.0f))); 
+    shader->setVec3("sunDir", sunDir); 
     shader->setVec3("sunColor", {1.0, 1.0, 0.95});
     shader->setFloat("sunIntensity", 5.0f);
     shader->setVec3("ambientColor", {0.141, 0.467, 0.820});
@@ -33,9 +37,13 @@ void App::init() {
 
     skyboxShader = new Shader(SHADER_PATH + "skybox.vert", SHADER_PATH + "skybox.frag");
     skybox = new Skybox("assets/cubemaps/above_the_sea");
+
+    shadowMap = new ShadowMap();
+    shadowMap->init(2048);
     
     anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
     combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
+    plane = Object3D::LoadGLB(MODEL_PATH + "plane.glb", {0,-2.5,0}, 20);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
@@ -47,6 +55,7 @@ void App::update(float deltaTime, float currentTime) {
     offsetX *= 0.99f;
 
     camera->update(deltaTime);
+    shadowMap->update(sunDir, camera);
     shader->setVec3("camPosition", camera->position);
     
     if (anvil) anvil->Rotate(0.0f, offsetX, 0.0f);
@@ -61,13 +70,17 @@ void App::update(float deltaTime, float currentTime) {
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    shader->Use();
+    shader->setMat4("camMatrix", camera->matrix);
+    
     skybox->cubemap->assignToShader(shader, "skybox", 10);
     skybox->cubemap->Bind(10);
-    
-    if (anvil) anvil->Draw(shader, camera);
-    if(combi) combi->Draw(shader, camera);
 
+    
+    if (anvil) anvil->Draw(shader);
+    if(combi) combi->Draw(shader);
+    if(plane) plane->Draw(shader);
+
+    skyboxShader->setMat4("camMatrix", camera->matrix);
     skybox->Draw(skyboxShader, camera);
 }
 

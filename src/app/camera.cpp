@@ -10,6 +10,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction) {
     this->position = position;
     this->direction = direction;
     view = glm::lookAt(position, position + direction, up);
+    matrix = projection * view;
 }
 
 void Camera::update(float deltaTime) {
@@ -52,11 +53,9 @@ direction = glm::normalize(newDir);
     
 
     view = glm::lookAt(position, position + direction, up);
+    matrix = projection * view;
 }
 void Camera::setProjection(float FOVdeg, float nearPlane, float farPlane) {
     projection = glm::perspective(glm::radians(FOVdeg), (float)((float)WINDOW_WIDTH/(float)WINDOW_HEIGHT), nearPlane, farPlane);
+    matrix = projection * view;
 }
-glm::mat4 Camera::getCamMatrix() {
-    return projection * view;
-}
-

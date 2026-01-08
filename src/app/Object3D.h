@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 class Object3D {
@@ -25,7 +26,7 @@ class Object3D {
             glm::vec3 rot = {0.0f, 0.0f, 0.0f}
         );
 
-        void Draw(Shader *shader, Camera *camera);
+        void Draw(Shader *shader);
         glm::mat4 getModelMatrix();
 
         inline void Move(float x, float y, float z) { position += glm::vec3(x,y,z); }
