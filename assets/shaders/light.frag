@@ -28,9 +28,8 @@ float ShadowCalculation(vec4 FragPosLightSpace, vec3 N, vec3 L) {
     if(projCoords.z > 1.0) return 0.0;
 
     float currentDepth = projCoords.z;
-    float bias = max(0.01 * (1.0 - dot(N, L)), 0.002);
+    float bias = max(0.001 * (1.0 - dot(N, L)), 0.0001);
 
-    // PCF: Percentage Closer Filtering
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     for(int x = -1; x <= 1; ++x) {

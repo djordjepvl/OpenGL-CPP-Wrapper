@@ -25,8 +25,8 @@ float offsetX = 0.0f;
 void App::init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glFrontFace(GL_CW);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     shader = new Shader(SHADER_PATH + "light.vert", SHADER_PATH + "light.frag");
     shader->setVec3("sunDir", sunDir); 
@@ -57,11 +57,10 @@ void App::update(float deltaTime, float currentTime) {
 
     camera->update(deltaTime);
     shadowMap->update(sunDir, camera);
-    shader->setVec3("camPosition", camera->position);
     
     if (anvil) anvil->Rotate(0.0f, offsetX, 0.0f);
     if (combi) combi->Rotate(0.0f, offsetX, 0.0f);
-
+    
     Input::mouseX = 0.0f;
     Input::mouseY = 0.0f;
     Input::deltaMouseX = 0.0f;
@@ -70,18 +69,21 @@ void App::update(float deltaTime, float currentTime) {
 
 void App::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_FRONT);
     shadowShader->Use();
     shadowShader->setMat4("shadowMatrix", shadowMap->matrix);
-
+    
     shadowMap->bind();
     if (anvil) anvil->Draw(shadowShader);
     if(combi) combi->Draw(shadowShader);
     if(plane) plane->Draw(shadowShader);
     shadowMap->unbind();
-
+    
+    glCullFace(GL_BACK);
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
+    shader->setVec3("camPosition", camera->position);
     shader->setMat4("camMatrix", camera->matrix);
     shader->setMat4("shadowMatrix", shadowMap->matrix);
     
