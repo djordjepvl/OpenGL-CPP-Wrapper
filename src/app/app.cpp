@@ -32,15 +32,15 @@ void App::init() {
     shader->setVec3("sunDir", sunDir); 
     shader->setVec3("sunColor", {1.0, 1.0, 0.95});
     shader->setFloat("sunIntensity", 3.2f);
-    shader->setVec3("ambientColor", {0.141, 0.467, 0.820});
-    shader->setFloat("ambientIntensity", 6.0f);
+    shader->setVec3("ambientColor", {0.341, 0.567, 0.820});
+    shader->setFloat("ambientIntensity", 4.0f);
 
     skyboxShader = new Shader(SHADER_PATH + "skybox.vert", SHADER_PATH + "skybox.frag");
     skybox = new Skybox("assets/cubemaps/above_the_sea");
 
     shadowShader = new Shader(SHADER_PATH + "shadow.vert", SHADER_PATH + "shadow.frag");
     shadowMap = new ShadowMap();
-    shadowMap->init(2048);
+    shadowMap->init(2048*2);
     
     anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
     combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});

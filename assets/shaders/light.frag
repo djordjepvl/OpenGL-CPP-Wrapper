@@ -22,15 +22,24 @@ uniform float ambientIntensity;
 
 uniform vec3 camPosition;
 
-float ShadowCalculation(vec4 FragPosLightSpace) {
-   
-   vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
-   projCoords = projCoords * 0.5 + 0.5;
-   if(projCoords.z > 1.0) return 0.0;
-   float closestDepth = texture(shadowMap, projCoords.xy).r; 
-   float currentDepth = projCoords.z;
-   float bias = 0.005;
-   return currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+float ShadowCalculation(vec4 FragPosLightSpace, vec3 N, vec3 L) {
+    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    if(projCoords.z > 1.0) return 0.0;
+
+    float currentDepth = projCoords.z;
+    float bias = max(0.01 * (1.0 - dot(N, L)), 0.002);
+
+    // PCF: Percentage Closer Filtering
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    return shadow / 9.0;
 }
 
 void main() {
@@ -62,7 +71,7 @@ void main() {
 
    vec3 kd = (1.0 - metalness) * albedo;
 
-   vec3 ambient = ambientColor * ambientIntensity * kd  * ao * (1.0 - F0);
+   vec3 ambient = ambientColor * ambientIntensity * kd  * ao * (1.0 - F);
    vec3 diffuse = sunColor * diff * sunIntensity * kd * (1.0 - F);
    vec3 specular = sunColor * spec * sunIntensity * F;
 
@@ -71,7 +80,7 @@ void main() {
    vec3 envReflection = textureLod(skybox, R, mip).rgb;
    vec3 reflection = envReflection * F;
 
-   float shadow = ShadowCalculation(FragPosLightSpace);
+   float shadow = ShadowCalculation(FragPosLightSpace, N, L);
    vec3 directLighting = (diffuse + specular) * (1.0 - shadow);
    vec3 indirectLighting = ambient + reflection;
 
