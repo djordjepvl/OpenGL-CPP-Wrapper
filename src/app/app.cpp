@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-glm::vec3 sunDir = glm::normalize(glm::vec3(-0.3f, -0.2f, 0.0f));
+glm::vec3 sunDir = glm::normalize(glm::vec3(-0.3f, -0.3f, 0.0f));
 
 Shader *shader;
 Shader *shadowShader;
@@ -42,8 +42,8 @@ void App::init() {
     shadowMap = new ShadowMap();
     shadowMap->init(2048*4);
     
-    anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
-    combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
+    anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 7);
+    //combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
     plane = Object3D::LoadGLB(MODEL_PATH + "plane.glb", {0,-2.5,0}, 20);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));

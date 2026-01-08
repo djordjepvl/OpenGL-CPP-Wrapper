@@ -23,17 +23,14 @@ void ShadowMap::init(int resolution){
 }
 
 void ShadowMap::update(glm::vec3 sunDir, Camera *playerCam) {
-    glm::vec3 focusPoint = playerCam->position + (playerCam->direction * 10.0f);
+    glm::vec3 focusPoint = playerCam->position + (playerCam->direction * orthoSize/2.0f);
 
-    float distance = 40.0f; 
+    float distance = 10.0f; 
     this->position = focusPoint - (glm::normalize(sunDir) * distance);
     
     glm::mat4 lightView = glm::lookAt(this->position, focusPoint, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    float size = 20.0f; 
-    float near_p = 1.0f;
-    float far_p = 100.0f;
-    glm::mat4 lightProjection = glm::ortho(-size, size, -size, size, near_p, far_p);
+    glm::mat4 lightProjection = glm::ortho(-orthoSize, orthoSize, -orthoSize, orthoSize, nearPlane, farPlane);
 
     this->matrix = lightProjection * lightView;
 }

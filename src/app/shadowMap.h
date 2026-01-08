@@ -22,9 +22,9 @@ class ShadowMap {
         unsigned int depthMap;
         unsigned int resolution;
 
-        float orthoSize = 20.0f;
+        float orthoSize = 10.0f;
         float nearPlane = 1.0f;
-        float farPlane = 100.0f;
+        float farPlane = 20.0f;
 
         void init(int resolution);
         void update(glm::vec3 sunDir, Camera *camera);
