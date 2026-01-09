@@ -10,5 +10,6 @@ class Material {
         
         Material(const std::map<int, std::shared_ptr<Texture>>& textures);
 
-        void Apply(Shader *shader);
+        void Bind(Shader *shader);
+        void Unbind(Shader *shader);
 };

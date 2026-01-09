@@ -9,7 +9,7 @@ Material::Material(const std::map<int, std::shared_ptr<Texture>>& textures){
     }
 }
 
-void Material::Apply(Shader *shader){
+void Material::Bind(Shader *shader){
     int currSlot = 0;
     auto bindMap = [&](std::shared_ptr<Texture> map, const std::string &str) {
         if (!map) return;
@@ -21,4 +21,15 @@ void Material::Apply(Shader *shader){
     bindMap(diffuseMap, "diffuse0");
     bindMap(specularMap, "specular0");
     bindMap(normalMap, "normal0");
+}
+
+void Material::Unbind(Shader *shader) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

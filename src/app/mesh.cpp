@@ -29,7 +29,8 @@ Mesh::~Mesh() {
 }
 
 void Mesh::Draw(Shader *shader) {
-    if (material) material->Apply(shader);
+    if (material) material->Bind(shader);
     vao->Bind();
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    if (material) material->Unbind(shader);
 }
