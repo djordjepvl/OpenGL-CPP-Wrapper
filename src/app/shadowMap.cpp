@@ -35,13 +35,13 @@ void ShadowMap::update(glm::vec3 sunDir, Camera *playerCam) {
     this->matrix = lightProjection * lightView;
 }
 
-void ShadowMap::bind() {
+void ShadowMap::Bind() {
     glViewport(0, 0, resolution, resolution);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void ShadowMap::unbind() {
+void ShadowMap::Unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 }

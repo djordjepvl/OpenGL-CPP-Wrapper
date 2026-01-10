@@ -28,6 +28,6 @@ class ShadowMap {
 
         void init(int resolution);
         void update(glm::vec3 sunDir, Camera *camera);
-        void bind();
-        void unbind();
+        void Bind();
+        void Unbind();
 };

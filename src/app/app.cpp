@@ -19,7 +19,7 @@ Shader *skyboxShader;
 Skybox *skybox;
 ShadowMap *shadowMap;
 Camera *camera;
-std::shared_ptr<Object3D> anvil, combi, plane = nullptr;
+std::shared_ptr<Object3D> obj1, obj2, obj3 = nullptr;
 float offsetX = 0.0f;
 
 void App::init() {
@@ -40,9 +40,9 @@ void App::init() {
     shadowMap = new ShadowMap();
     shadowMap->init(2048*4);
     
-    anvil = Object3D::LoadGLB(MODEL_PATH + "rifle__awp_weapon_model_cs2.glb", {-2, 0, 0}, 2);
-    combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
-    plane = Object3D::LoadGLB(MODEL_PATH + "plane.glb", {0,-2.5,0}, 20);
+    obj1 = Object3D::LoadGLB(MODEL_PATH + "1989_ferrari_f40_lm.glb", {-2, 0, 0}, 2);
+    //combi = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
+    //plane = Object3D::LoadGLB(MODEL_PATH + "plane2.glb", {0,-2.5,0}, 200);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);
@@ -56,8 +56,8 @@ void App::update(float deltaTime, float currentTime) {
     camera->update(deltaTime);
     shadowMap->update(sunDir, camera);
     
-    if (anvil) anvil->Rotate(0.0f, offsetX, 0.0f);
-    if (combi) combi->Rotate(0.0f, offsetX, 0.0f);
+    if (obj1) obj1->Rotate(0.0f, offsetX, 0.0f);
+    if (obj2) obj2->Rotate(0.0f, offsetX, 0.0f);
     
     Input::mouseX = 0.0f;
     Input::mouseY = 0.0f;
@@ -73,11 +73,11 @@ void App::render() {
     shadowShader->Use();
     shadowShader->setMat4("shadowMatrix", shadowMap->matrix);
     
-    shadowMap->bind();
-    if (anvil) anvil->Draw(shadowShader);
-    if(combi) combi->Draw(shadowShader);
-    if(plane) plane->Draw(shadowShader);
-    shadowMap->unbind();
+    shadowMap->Bind();
+    if (obj1) obj1->Draw(shadowShader);
+    if(obj2) obj2->Draw(shadowShader);
+    if(obj3) obj3->Draw(shadowShader);
+    shadowMap->Unbind();
     
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -96,9 +96,9 @@ void App::render() {
     glBindTexture(GL_TEXTURE_2D, shadowMap->depthMap);
     shader->setInt("shadowMap", 11);
     
-    if (anvil) anvil->Draw(shader);
-    if(combi) combi->Draw(shader);
-    if(plane) plane->Draw(shader);
+    if (obj1) obj1->Draw(shader);
+    if(obj2) obj2->Draw(shader);
+    if(obj3) obj3->Draw(shader);
 
     skyboxShader->setMat4("camMatrix", camera->matrix);
     skybox->Draw(skyboxShader, camera);
@@ -107,6 +107,6 @@ void App::render() {
 void App::close() {
     delete shader;
     delete camera;
-    anvil = nullptr;
-    combi = nullptr;
+    obj1 = nullptr;
+    obj2 = nullptr;
 }
