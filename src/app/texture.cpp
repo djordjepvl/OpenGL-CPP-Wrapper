@@ -93,3 +93,27 @@ void Texture::Bind(GLuint slot){
 void Texture::Unbind(){
     glBindTexture(glType, 0);
 }
+
+std::shared_ptr<Texture> Texture::Create1x1(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+    unsigned char data[] = { r, g, b, a };
+    
+    auto tex = std::make_shared<Texture>(); 
+    
+    glGenTextures(1, &tex->id);
+    glBindTexture(GL_TEXTURE_2D, tex->id);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return tex;
+}
+void Texture::initDefaultTextures() {
+    Texture::White = Texture::Create1x1(255, 255, 255, 255);
+    Texture::Normal = Texture::Create1x1(128, 128, 255, 255);
+    Texture::Black = Texture::Create1x1(0,0,0,255);
+}

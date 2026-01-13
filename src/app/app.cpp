@@ -25,6 +25,8 @@ float offsetX = 0.0f;
 void App::init() {
     glEnable(GL_DEPTH_TEST);
     
+    Texture::initDefaultTextures();
+
 
     shader = new Shader(SHADER_PATH + "light.vert", SHADER_PATH + "light.frag");
     shader->setVec3("sunDir", sunDir); 
@@ -40,9 +42,9 @@ void App::init() {
     shadowMap = new ShadowMap();
     shadowMap->init(2048*4);
     
-    obj1 = Object3D::LoadGLB(MODEL_PATH + "sas__cs2_agent_model_blue.glb", {-2, -2, 0}, 2);
+    obj1 = Object3D::LoadGLB(MODEL_PATH + "animal__food__chicken_model_cs2.glb", {-2, -2, 0}, 2);
     obj2 = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
-    obj3 = Object3D::LoadGLB(MODEL_PATH + "plane.glb", {0,-2.5,0}, 200);
+    obj3 = Object3D::LoadGLB(MODEL_PATH + "plane2.glb", {0,-2.5,0}, 200);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);

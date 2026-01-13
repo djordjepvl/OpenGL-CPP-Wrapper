@@ -17,11 +17,18 @@ class Texture
         GLuint id;
         TextureType type;
         GLenum glType;
-        void init(const unsigned char* data, int width, int height, int numChannels);
+        Texture() = default;
         Texture(const unsigned char* data, int width, int height, int numChannels, TextureType texType, GLuint slot);
         Texture(const std::string &imagePath, TextureType texType, GLenum slot);
         ~Texture();
+        void init(const unsigned char* data, int width, int height, int numChannels);
         void Texture::assignToShader(Shader* shader, const std::string &uniform, GLuint slot);
         void Bind(GLuint slot);
         void Unbind();
+
+        static std::shared_ptr<Texture> White;   // for baseColor
+        static std::shared_ptr<Texture> Normal;  // for normals (0.5, 0.5, 1.0)
+        static std::shared_ptr<Texture> Black;   // for AO/Metallic/Roughness if needed
+        static std::shared_ptr<Texture> Create1x1(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+        static void initDefaultTextures();
 };

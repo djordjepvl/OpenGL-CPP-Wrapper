@@ -1,6 +1,19 @@
 #include <material.h>
 
-Material::Material(const std::map<int, std::shared_ptr<Texture>>& textures){
+std::shared_ptr<Texture> Texture::White;
+std::shared_ptr<Texture> Texture::Normal;
+std::shared_ptr<Texture> Texture::Black;
+
+Material::Material(
+    const std::map<int, std::shared_ptr<Texture>>& textures,
+    const glm::vec4& baseColorFactor,
+    float metallicFactor,
+    float roughnessFactor
+){
+    this->baseColorFactor = baseColorFactor;
+    this->metallicFactor = metallicFactor;
+    this->roughnessFactor = roughnessFactor;
+    
     for (auto const& [id, tex] : textures) {
         if (!tex) continue;
         if (tex->type == DIFFUSE) baseColorTexture = tex;
@@ -11,16 +24,21 @@ Material::Material(const std::map<int, std::shared_ptr<Texture>>& textures){
 
 void Material::Bind(Shader *shader){
     int currSlot = 0;
-    auto bindMap = [&](std::shared_ptr<Texture> map, const std::string &str) {
-        if (!map) return;
-        map->assignToShader(shader, str, currSlot);
-        map->Bind(currSlot);
+    auto bindMap = [&](std::shared_ptr<Texture> map, const std::string &str, std::shared_ptr<Texture> fallback) {
+        std::shared_ptr<Texture> toBind = map ? map : fallback;
+        
+        toBind->assignToShader(shader, str, currSlot);
+        toBind->Bind(currSlot);
         currSlot++;
     };
     
-    bindMap(baseColorTexture, "diffuse0");
-    bindMap(metallicRoughnessTexture, "specular0");
-    bindMap(normalTexture, "normal0");
+    bindMap(baseColorTexture, "uBaseColorTexture", Texture::White);
+    bindMap(metallicRoughnessTexture, "uMetallicRoughnessTexture", Texture::White);
+    bindMap(normalTexture, "uNormalTexture", Texture::Normal);
+    
+    shader->setVec4("uBaseColorFactor", baseColorFactor);
+    shader->setFloat("uMetallicFactor", metallicFactor);
+    shader->setFloat("uRoughnessFactor", roughnessFactor);
 }
 
 void Material::Unbind(Shader *shader) {
