@@ -39,16 +39,14 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
     std::map<int, std::shared_ptr<Texture>> loadedTextures;
     std::vector<std::shared_ptr<Mesh>> loadedMeshes;
 
-    // 1. Iterate through NODES instead of meshes to get transform data
     for (const auto& node : model.nodes) {
-        if (node.mesh < 0) continue; // Skip nodes without geometry
+        if (node.mesh < 0) continue; // skip nodes without geometry
 
-        // 2. Extract Node Matrix (Handling T/R/S or Matrix)
         glm::mat4 nodeMatrix = glm::mat4(1.0f);
         if (node.matrix.size() == 16) {
             nodeMatrix = glm::make_mat4(node.matrix.data());
         } else {
-            // 1. Handle Translation
+            // translation
             if (node.translation.size() == 3) {
                 nodeMatrix = glm::translate(nodeMatrix, glm::vec3(
                     (float)node.translation[0], 
@@ -56,17 +54,17 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
                     (float)node.translation[2]
                 ));
             }
-            // 2. Handle Rotation (Quaternion)
+            // rotation
             if (node.rotation.size() == 4) {
                 glm::quat q = glm::quat(
-                    (float)node.rotation[3], // GLM quat is (w, x, y, z)
+                    (float)node.rotation[3],
                     (float)node.rotation[0], 
                     (float)node.rotation[1], 
                     (float)node.rotation[2]
                 );
                 nodeMatrix *= glm::mat4_cast(q);
             }
-            // 3. Handle Scale
+            // scale
             if (node.scale.size() == 3) {
                 nodeMatrix = glm::scale(nodeMatrix, glm::vec3(
                     (float)node.scale[0], 
@@ -76,13 +74,13 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
             }
         }
 
-        // Pre-calculate Normal Matrix for the bake
+        // pre-calculate normal matrix for the bake
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(nodeMatrix)));
 
         const auto& gltfMesh = model.meshes[node.mesh];
         for (const auto& primitive : gltfMesh.primitives) {
             
-            // --- ACCESSOR & BUFFER INFO (Same as your original) ---
+            // accessors and BufferInfo
             const auto& posAcc = model.accessors[primitive.attributes.at("POSITION")];
             const auto& normAcc = model.accessors[primitive.attributes.at("NORMAL")];
             const auto& uvAcc = model.accessors[primitive.attributes.at("TEXCOORD_0")];
@@ -98,7 +96,7 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
             auto [uvBase, uvStride] = getBufferInfo(uvAcc);
             auto [idxBase, idxStride] = getBufferInfo(idxAcc);
 
-            // 3. Assemble Vertices with BAKING
+            //load vertices (with transform baking)
             std::vector<Vertex> vertices;
             for (size_t i = 0; i < posAcc.count; i++) {
                 Vertex v;
@@ -106,7 +104,6 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
                 float* n = (float*)(normBase + i * normStride);
                 float* u = (float*)(uvBase + i * uvStride);
 
-                // Multiply local data by nodeMatrix to "fix" orientation/position
                 v.position = glm::vec3(nodeMatrix * glm::vec4(p[0], p[1], p[2], 1.0f));
                 v.normal   = glm::normalize(normalMatrix * glm::vec3(n[0], n[1], n[2]));
                 v.UV       = glm::vec2(u[0], u[1]);
@@ -114,7 +111,7 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
                 vertices.push_back(v);
             }
 
-            // 4. Handle Indices (Same as original)
+            // load indices
             std::vector<unsigned int> indices;
             for (size_t i = 0; i < idxAcc.count; i++) {
                 if (idxAcc.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT)
@@ -123,7 +120,7 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
                     indices.push_back(((uint32_t*)idxBase)[i]);
             }
 
-            // 5. Material & Texture Loading (Same as original)
+            // load material
             std::shared_ptr<Material> meshMaterial = nullptr;
             if (primitive.material >= 0) {
                 const auto& gltfMat = model.materials[primitive.material];

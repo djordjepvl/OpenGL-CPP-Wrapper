@@ -6,7 +6,10 @@
 
 class Material {
     public:
-        std::shared_ptr<Texture> diffuseMap, specularMap, normalMap;
+        std::shared_ptr<Texture> baseColorTexture, metallicRoughnessTexture, normalTexture, occlusionTexture;
+        glm::vec4 baseColorFactor = glm::vec4(1.0f);
+        float metallicFactor = 1.0f;
+        float roughnessFactor = 1.0f;
         
         Material(const std::map<int, std::shared_ptr<Texture>>& textures);
 

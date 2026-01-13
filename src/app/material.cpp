@@ -3,9 +3,9 @@
 Material::Material(const std::map<int, std::shared_ptr<Texture>>& textures){
     for (auto const& [id, tex] : textures) {
         if (!tex) continue;
-        if (tex->type == DIFFUSE) diffuseMap = tex;
-        else if (tex->type == SPECULAR) specularMap = tex;
-        else if (tex->type == NORMAL) normalMap = tex;
+        if (tex->type == DIFFUSE) baseColorTexture = tex;
+        else if (tex->type == SPECULAR) metallicRoughnessTexture = tex;
+        else if (tex->type == NORMAL) normalTexture = tex;
     }
 }
 
@@ -18,9 +18,9 @@ void Material::Bind(Shader *shader){
         currSlot++;
     };
     
-    bindMap(diffuseMap, "diffuse0");
-    bindMap(specularMap, "specular0");
-    bindMap(normalMap, "normal0");
+    bindMap(baseColorTexture, "diffuse0");
+    bindMap(metallicRoughnessTexture, "specular0");
+    bindMap(normalTexture, "normal0");
 }
 
 void Material::Unbind(Shader *shader) {
