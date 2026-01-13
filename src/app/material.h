@@ -6,7 +6,7 @@
 
 class Material {
     public:
-        std::shared_ptr<Texture> baseColorTexture, metallicRoughnessTexture, normalTexture, occlusionTexture;
+        std::shared_ptr<Texture> baseColorTexture, metallicRoughnessTexture, normalTexture, occlusionTexture = nullptr;
         glm::vec4 baseColorFactor = glm::vec4(1.0f);
         float metallicFactor = 1.0f;
         float roughnessFactor = 1.0f;

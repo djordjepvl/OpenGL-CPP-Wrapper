@@ -44,7 +44,7 @@ void App::init() {
     
     obj1 = Object3D::LoadGLB(MODEL_PATH + "animal__food__chicken_model_cs2.glb", {-2, -2, 0}, 2);
     obj2 = Object3D::LoadGLB(MODEL_PATH + "combi.glb", {2,0,0}, 6, {0,-90,0});
-    obj3 = Object3D::LoadGLB(MODEL_PATH + "plane2.glb", {0,-2.5,0}, 200);
+    obj3 = Object3D::LoadGLB(MODEL_PATH + "plane3.glb", {0,-2.5,0}, 200);
 
     camera = new Camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     camera->setProjection(70.0f, 0.1f, 100.0f);

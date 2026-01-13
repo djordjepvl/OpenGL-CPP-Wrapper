@@ -122,6 +122,9 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
 
             // load material
             std::shared_ptr<Material> meshMaterial = nullptr;
+            glm::vec4 baseColor;
+            float metallic;
+            float roughness;
             if (primitive.material >= 0) {
                 const auto& gltfMat = model.materials[primitive.material];
                 auto loadTex = [&](int texIdx, TextureType type) {
@@ -137,18 +140,18 @@ std::shared_ptr<Object3D> Object3D::LoadGLB(const std::string& path, glm::vec3 p
                 loadTex(gltfMat.pbrMetallicRoughness.baseColorTexture.index, DIFFUSE);
                 loadTex(gltfMat.normalTexture.index, NORMAL);
                 loadTex(gltfMat.pbrMetallicRoughness.metallicRoughnessTexture.index, SPECULAR);
-                glm::vec4 baseColor = glm::vec4(
+                baseColor = glm::vec4(
                     (float)gltfMat.pbrMetallicRoughness.baseColorFactor[0],
                     (float)gltfMat.pbrMetallicRoughness.baseColorFactor[1],
                     (float)gltfMat.pbrMetallicRoughness.baseColorFactor[2],
                     (float)gltfMat.pbrMetallicRoughness.baseColorFactor[3]
                 );
-                float metallic = (float)gltfMat.pbrMetallicRoughness.metallicFactor;
-                float roughness = (float)gltfMat.pbrMetallicRoughness.roughnessFactor;
+                metallic = (float)gltfMat.pbrMetallicRoughness.metallicFactor;
+                roughness = (float)gltfMat.pbrMetallicRoughness.roughnessFactor;
                 
-                meshMaterial = std::make_shared<Material>(loadedTextures, baseColor, metallic, roughness);
             }
-
+            meshMaterial = std::make_shared<Material>(loadedTextures, baseColor, metallic, roughness);
+            
             loadedMeshes.push_back(std::make_shared<Mesh>(vertices, indices, meshMaterial));
         }
     }

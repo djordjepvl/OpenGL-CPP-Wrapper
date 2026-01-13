@@ -1,8 +1,8 @@
 #include <material.h>
 
-std::shared_ptr<Texture> Texture::White;
-std::shared_ptr<Texture> Texture::Normal;
-std::shared_ptr<Texture> Texture::Black;
+std::shared_ptr<Texture> White;
+std::shared_ptr<Texture> Normal;
+std::shared_ptr<Texture> Black;
 
 Material::Material(
     const std::map<int, std::shared_ptr<Texture>>& textures,
@@ -27,9 +27,11 @@ void Material::Bind(Shader *shader){
     auto bindMap = [&](std::shared_ptr<Texture> map, const std::string &str, std::shared_ptr<Texture> fallback) {
         std::shared_ptr<Texture> toBind = map ? map : fallback;
         
-        toBind->assignToShader(shader, str, currSlot);
-        toBind->Bind(currSlot);
-        currSlot++;
+        if (toBind) {
+            toBind->assignToShader(shader, str, currSlot);
+            toBind->Bind(currSlot);
+            currSlot++;
+        }
     };
     
     bindMap(baseColorTexture, "uBaseColorTexture", Texture::White);

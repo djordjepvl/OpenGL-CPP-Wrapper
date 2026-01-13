@@ -2,6 +2,10 @@
 
 #include <stb_image.h>
 
+std::shared_ptr<Texture> Texture::White;
+std::shared_ptr<Texture> Texture::Normal;
+std::shared_ptr<Texture> Texture::Black;
+
 void Texture::init(const unsigned char* data, int width, int height, int numChannels) {
     this->glType = GL_TEXTURE_2D;
 
@@ -94,26 +98,30 @@ void Texture::Unbind(){
     glBindTexture(glType, 0);
 }
 
-std::shared_ptr<Texture> Texture::Create1x1(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+std::shared_ptr<Texture> Texture::Create1x1(unsigned char r, unsigned char g, unsigned char b, unsigned char a, TextureType type) {
     unsigned char data[] = { r, g, b, a };
-    
     auto tex = std::make_shared<Texture>(); 
     
+    tex->glType = GL_TEXTURE_2D; // CRITICAL: Fix uninitialized Bind()
+    tex->type = type;         // Just to be safe
+
     glGenTextures(1, &tex->id);
     glBindTexture(GL_TEXTURE_2D, tex->id);
+
+    // Disable mipmaps for this 1x1 texture
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
+    
     glBindTexture(GL_TEXTURE_2D, 0);
     return tex;
 }
 void Texture::initDefaultTextures() {
-    Texture::White = Texture::Create1x1(255, 255, 255, 255);
-    Texture::Normal = Texture::Create1x1(128, 128, 255, 255);
-    Texture::Black = Texture::Create1x1(0,0,0,255);
+    Texture::White = Texture::Create1x1(125, 125, 125, 255, DIFFUSE);
+    Texture::Normal = Texture::Create1x1(128, 128, 255, 255, NORMAL);
+    Texture::Black = Texture::Create1x1(0,0,0,255, SPECULAR);
 }

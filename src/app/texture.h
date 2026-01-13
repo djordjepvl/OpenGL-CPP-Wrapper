@@ -29,6 +29,6 @@ class Texture
         static std::shared_ptr<Texture> White;   // for baseColor
         static std::shared_ptr<Texture> Normal;  // for normals (0.5, 0.5, 1.0)
         static std::shared_ptr<Texture> Black;   // for AO/Metallic/Roughness if needed
-        static std::shared_ptr<Texture> Create1x1(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+        static std::shared_ptr<Texture> Create1x1(unsigned char r, unsigned char g, unsigned char b, unsigned char a, TextureType type);
         static void initDefaultTextures();
 };
