@@ -22,7 +22,7 @@ class Texture
         Texture(const std::string &imagePath, TextureType texType, GLenum slot);
         ~Texture();
         void init(const unsigned char* data, int width, int height, int numChannels);
-        void Texture::assignToShader(Shader* shader, const std::string &uniform, GLuint slot);
+        void assignToShader(Shader* shader, const std::string &uniform, GLuint slot);
         void Bind(GLuint slot);
         void Unbind();
 

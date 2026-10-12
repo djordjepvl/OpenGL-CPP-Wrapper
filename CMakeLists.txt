@@ -7,6 +7,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(OpenGL REQUIRED)
 
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+add_subdirectory(dependencies/GLFW)
+
 add_executable(LearningOpenGL
     src/glad.c
     src/config.h
@@ -43,8 +48,8 @@ add_executable(LearningOpenGL
 
 set(DEPENDENCIES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 
-target_include_directories(LearningOpenGL PRIVATE 
-    ${DEPENDENCIES_PATH}/GLFW/include
+# GLFW's include path now comes from the glfw target automatically
+target_include_directories(LearningOpenGL PRIVATE
     ${DEPENDENCIES_PATH}/GLAD/include
     ${DEPENDENCIES_PATH}/GLM/include
     ${DEPENDENCIES_PATH}/stb/include
@@ -54,17 +59,19 @@ target_include_directories(LearningOpenGL PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app
 )
-target_link_directories(LearningOpenGL PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-vc2022
+
+# Copy assets next to the built exe (re-copies on every build)
+add_custom_command(TARGET LearningOpenGL POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets
+        $<TARGET_FILE_DIR:LearningOpenGL>/assets
 )
 
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/assets")
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/" 
-     DESTINATION "${CMAKE_BINARY_DIR}/assets")
-
-target_link_libraries(LearningOpenGL PRIVATE 
-    glfw3
+target_link_libraries(LearningOpenGL PRIVATE
+    glfw
     OpenGL::GL
 )
 
-
+if(MINGW)
+    target_link_options(LearningOpenGL PRIVATE -static)
+endif()
